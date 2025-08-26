@@ -1,7 +1,11 @@
-import "./App.css";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return <div className="text-3xl text-red-500 ">Hello i am Suresh</div>;
+  return (
+    <div>
+      <AppRoutes />
+    </div>
+  );
 }
 
 export default App;
