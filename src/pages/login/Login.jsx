@@ -1,8 +1,17 @@
 import React, { useState, useRef } from "react";
 import Header from "./Header";
 import { loginValidation } from "./loginValidations";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
+import { useNavigate } from "react-router";
+import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const email = useRef();
   const password = useRef();
@@ -10,15 +19,30 @@ const Login = () => {
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState([]);
   const [fullNameError, setFullNameError] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const handleLogin = () => {
     if (isSignIn) {
-      const { emailErr, passwordErr } = loginValidation(
+      const { emailErr } = loginValidation(
         email.current.value,
         password.current.value
       );
       setEmailError(emailErr);
-      setPasswordError(passwordErr);
+
+      if (emailErr) return;
+
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then(() => {
+          navigate("/browse");
+        })
+        .catch((error) => {
+          setErrorMsg(getFirebaseErrorMessage(error.code));
+          password.current.value = "";
+        });
     } else {
       const { emailErr, passwordErr, fullNameErr } = loginValidation(
         email.current.value,
@@ -28,6 +52,30 @@ const Login = () => {
       setEmailError(emailErr);
       setPasswordError(passwordErr);
       setFullNameError(fullNameErr);
+
+      if (emailErr || passwordErr || fullNameErr) return;
+
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: fullName.current.value,
+          })
+            .then(() => {
+              navigate("/browse");
+            })
+            .catch((error) => {
+              console.log("Profile update error:", error.message);
+              setErrorMsg("Failed to update profile. Please try again.");
+            });
+        })
+        .catch((error) => {
+          setErrorMsg(getFirebaseErrorMessage(error.code));
+        });
     }
   };
 
@@ -37,6 +85,7 @@ const Login = () => {
     if (email.current) email.current.value = "";
     if (password.current) password.current.value = "";
     if (fullName.current) fullName.current.value = "";
+    if (errorMsg) setErrorMsg("");
 
     setEmailError(null);
     setPasswordError(null);
@@ -60,6 +109,11 @@ const Login = () => {
         <h1 className="text-3xl mx-2 font-bold mb-6">
           {isSignIn ? "Sign In" : "Sign Up"}
         </h1>
+        {errorMsg && (
+          <p className="bg-yellow-500/80 p-4 m-2 w-full rounded-md text-black">
+            {errorMsg}
+          </p>
+        )}
         {!isSignIn && (
           <>
             <input

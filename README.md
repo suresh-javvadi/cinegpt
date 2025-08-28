@@ -2,6 +2,19 @@
 
 - React vite app
 - TailwindCSS
+- Header
+- Routing of teh app
+- Login form
+- Sign up from
+- form validations
+- useRef Hook
+- firebase setup
+- Deploy in firebase
+- Implemented SignUp User
+- Implemented Sign In user
+- Add Redux Store with userSlice
+- Implemented Sign out
+- Update user's Profile
 
 # Features
 

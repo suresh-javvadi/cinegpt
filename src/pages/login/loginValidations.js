@@ -25,9 +25,5 @@ export const loginValidation = (email, password, fullName) => {
     errors.fullNameErr = "Full name must be at least 2 characters";
   }
 
-  if (errors.emailErr || errors.passwordErr || errors.fullNameErr) {
-    return errors;
-  } else {
-    return null;
-  }
+  return errors;
 };
