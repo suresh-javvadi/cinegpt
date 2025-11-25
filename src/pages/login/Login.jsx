@@ -9,8 +9,11 @@ import {
 import { auth } from "../../firebase/firebaseConfig";
 import { useNavigate } from "react-router";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../slices/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const email = useRef();
@@ -23,13 +26,14 @@ const Login = () => {
 
   const handleLogin = () => {
     if (isSignIn) {
-      const { emailErr } = loginValidation(
+      const { emailErr, passwordErr } = loginValidation(
         email.current.value,
         password.current.value
       );
       setEmailError(emailErr);
+      setPasswordError(passwordErr);
 
-      if (emailErr) return;
+      if (emailErr || passwordErr) return;
 
       signInWithEmailAndPassword(
         auth,
@@ -66,6 +70,15 @@ const Login = () => {
             displayName: fullName.current.value,
           })
             .then(() => {
+              const { uid, email, displayName } = auth.currentUser;
+
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                })
+              );
               navigate("/browse");
             })
             .catch((error) => {
@@ -101,68 +114,73 @@ const Login = () => {
           alt="background Image"
         />
       </div>
-      <form
-        onSubmit={(e) => e.preventDefault()}
-        className="w-4/12 absolute bg-black/80 bg-opacity-50 
-                 text-white p-10 my-24   mx-auto left-0 right-0 rounded-lg"
-      >
-        <h1 className="text-3xl mx-2 font-bold mb-6">
-          {isSignIn ? "Sign In" : "Sign Up"}
-        </h1>
-        {errorMsg && (
-          <p className="bg-yellow-500/80 p-4 m-2 w-full rounded-md text-black">
-            {errorMsg}
-          </p>
-        )}
-        {!isSignIn && (
-          <>
-            <input
-              type="text"
-              placeholder="Full Name"
-              ref={fullName}
-              className="m-2 p-4 border border-gray-400 w-full"
-            />
-            <p className="text-red-500 px-2">
-              {fullNameError && fullNameError}
-            </p>
-          </>
-        )}
-        <input
-          type="text"
-          placeholder="Email"
-          ref={email}
-          className="m-2 p-4 border border-gray-400 w-full"
-        />
-        <p className="text-red-500 px-2">{emailError && emailError}</p>
-        <input
-          type="password"
-          placeholder="Password"
-          ref={password}
-          className="m-2 p-4 border border-gray-400 w-full"
-        />
-        <p className="text-red-500 px-2">
-          {passwordError &&
-            passwordError.map((err, index) => <li key={index}>{err}</li>)}
-        </p>
-        <button
-          className="bg-red-600 w-full p-2 m-2 rounded my-4 cursor-pointer"
-          onClick={handleLogin}
+      <div className="h-screen flex items-center justify-center bg-gray-900">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="absolute w-4/12 2xl:w-3/12 bg-black/80 text-white p-10 rounded-lg"
         >
-          {isSignIn ? "Sign In" : "Sign Up"}
-        </button>
-
-        <p className="mx-2 mt-4">
-          <span className="text-gray-400">
-            {isSignIn ? "New to Netflix?" : "Already a user?"}
-          </span>
-          <span
-            className="underline cursor-pointer ml-1 font-bold"
-            onClick={handleSignUpClick}
+          <h1 className="text-3xl mx-2 font-bold mb-6">
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </h1>
+          {errorMsg && (
+            <p className="bg-yellow-500/80 p-4 m-2 w-full rounded-md text-black">
+              {errorMsg}
+            </p>
+          )}
+          {!isSignIn && (
+            <>
+              <input
+                type="text"
+                placeholder="Full Name"
+                ref={fullName}
+                className="m-2 p-4 border border-gray-400 w-full"
+              />
+              <p className="text-red-500 px-2">
+                {fullNameError && fullNameError}
+              </p>
+            </>
+          )}
+          <input
+            type="text"
+            placeholder="Email"
+            ref={email}
+            className="m-2 p-4 border border-gray-400 w-full"
+          />
+          <p className="text-red-500 px-2">{emailError && emailError}</p>
+          <input
+            type="password"
+            placeholder="Password"
+            ref={password}
+            className="m-2 p-4 border border-gray-400 w-full"
+          />
+          <p className="text-red-500 px-2">
+            {passwordError &&
+              (passwordError.length === 1
+                ? passwordError.map((err, index) => <p key={index}>{err}</p>)
+                : passwordError.map((err, index) => (
+                    <li key={index}>{err}</li>
+                  )))}
+          </p>
+          <button
+            className="bg-red-600 w-full p-2 m-2 rounded my-4 cursor-pointer"
+            onClick={handleLogin}
           >
-            {isSignIn ? "Sign up now." : "Sign in now."}
-          </span>
-        </p>
-      </form>
+            {isSignIn ? "Sign In" : "Sign Up"}
+          </button>
+
+          <p className="mx-2 mt-4">
+            <span className="text-gray-400">
+              {isSignIn ? "New to Netflix?" : "Already a user?"}
+            </span>
+            <span
+              className="underline cursor-pointer ml-1 font-bold"
+              onClick={handleSignUpClick}
+            >
+              {isSignIn ? "Sign up now." : "Sign in now."}
+            </span>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

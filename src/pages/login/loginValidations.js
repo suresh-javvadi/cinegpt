@@ -13,13 +13,19 @@ export const loginValidation = (email, password, fullName) => {
     errors.emailErr = "Please enter a valid email address";
   }
 
-  if (!passwordRegex.test(password)) {
-    errors.passwordErr = [
-      "Password must be at least 8 characters",
-      "an uppercase letter, a lowercase letter",
-      "a number, and a special character.",
-    ];
+  const passwordErrors = [];
+
+  if (password === null || password === "") {
+    passwordErrors.push("Oops! You forgot to enter your password.");
+  } else if (!passwordRegex.test(password)) {
+    passwordErrors.push(
+      "Password must be at least 8 characters,",
+      "include an uppercase letter, a lowercase letter,",
+      "a number, and a special character."
+    );
   }
+
+  errors.passwordErr = passwordErrors.length === 0 ? null : passwordErrors;
 
   if (!fullNameRegex.test(fullName)) {
     errors.fullNameErr = "Full name must be at least 2 characters";
