@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import Header from "./Header";
+import Header from "../../components/Header";
 import { loginValidation } from "./loginValidations";
 import {
   createUserWithEmailAndPassword,
@@ -7,14 +7,12 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
-import { useNavigate } from "react-router";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [isSignIn, setIsSignIn] = useState(true);
   const email = useRef();
   const password = useRef();
@@ -40,9 +38,7 @@ const Login = () => {
         email.current.value,
         password.current.value
       )
-        .then(() => {
-          navigate("/browse");
-        })
+        .then(() => {})
         .catch((error) => {
           setErrorMsg(getFirebaseErrorMessage(error.code));
           password.current.value = "";
@@ -79,7 +75,6 @@ const Login = () => {
                   displayName: displayName,
                 })
               );
-              navigate("/browse");
             })
             .catch((error) => {
               console.log("Profile update error:", error.message);
