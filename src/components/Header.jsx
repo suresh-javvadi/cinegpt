@@ -42,9 +42,9 @@ const Header = () => {
       });
   };
   return (
-    <div>
+    <div className="absolute bg-gradient-to-b from-black w-full z-10">
       {user ? (
-        <div className="flex justify-between items-center pl-8 pr-2 py-2 bg-gradient-to-b from-black w-full z-10">
+        <div className="flex justify-between items-center pl-8 pr-2 py-2">
           <img className="w-1/12" src={NETFLIX_LOGO} alt="logo" />
           <div className="flex">
             <img
@@ -62,11 +62,7 @@ const Header = () => {
         </div>
       ) : (
         <div>
-          <div>
-            <div className="absolute px-8 bg-gradient-to-b from-black w-full z-10">
-              <img className="w-2/12" src={LOGO} alt="logo" />
-            </div>
-          </div>
+          <img className="w-2/12" src={NETFLIX_LOGO} alt="logo" />
         </div>
       )}
     </div>

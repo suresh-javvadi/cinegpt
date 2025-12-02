@@ -78,7 +78,7 @@ const Login = () => {
               );
             })
             .catch((error) => {
-              console.log("Profile update error:", error.message);
+              console.error("Profile update error:", error.message);
               setErrorMsg("Failed to update profile. Please try again.");
             });
         })

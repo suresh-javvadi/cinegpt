@@ -19,6 +19,15 @@
 - Fix navigation for not login users to accessing protected routes and vice versa
 - Unsubscribed to the onAuthStateChanged callback
 - Add hardcoded values to the constant file
+- Register on TMDB API and create access token and API key
+- Get the data from TMDB now playing movies list API
+- Custom hook for now playing movies
+- Create movie slice
+- Update store with movies data
+- Create Top and Secondary containers
+- Create Video title and video background in the top container
+- Fetch movie videos by the TMDB API
+- Embedded the trailer video form the youtube and make it auto play on loop
 
 # Features
 
