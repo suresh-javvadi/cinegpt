@@ -15,6 +15,10 @@
 - Add Redux Store with userSlice
 - Implemented Sign out
 - Update user's Profile
+- Fix Sign up user display name is not showing
+- Fix navigation for not login users to accessing protected routes and vice versa
+- Unsubscribed to the onAuthStateChanged callback
+- Add hardcoded values to the constant file
 
 # Features
 

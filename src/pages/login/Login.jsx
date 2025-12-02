@@ -10,6 +10,7 @@ import { auth } from "../../firebase/firebaseConfig";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/userSlice";
+import { LOGIN_BG_IMG } from "../../utils/constants";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -104,10 +105,7 @@ const Login = () => {
     <div>
       <Header />
       <div className="absolute">
-        <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/3e4bd046-85a3-40e1-842d-fa11cec84349/web/IN-en-20250818-TRIFECTA-perspective_4bd1b66d-bbb6-4bc6-ba8f-ecbba53a1278_medium.jpg"
-          alt="background Image"
-        />
+        <img src={LOGIN_BG_IMG} alt="background Image" />
       </div>
       <div className="h-screen flex items-center justify-center bg-gray-900">
         <form
