@@ -28,6 +28,9 @@
 - Create Video title and video background in the top container
 - Fetch movie videos by the TMDB API
 - Embedded the trailer video form the youtube and make it auto play on loop
+- Planning for secondary container
+- Build movie list and movie cards
+- Add popular movies api
 
 # Features
 
