@@ -31,6 +31,9 @@
 - Planning for secondary container
 - Build movie list and movie cards
 - Add popular movies api
+- Add GPT Search
+- Add GPT search bar
+- Add multi language feature in GPT search page
 
 # Features
 
