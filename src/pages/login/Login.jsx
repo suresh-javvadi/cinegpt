@@ -102,21 +102,32 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="relative min-h-screen w-full">
       <Header />
-      <div className="absolute">
-        <img src={LOGIN_BG_IMG} alt="background Image" />
+      <div className="absolute inset-0 -z-10">
+        <img
+          src={LOGIN_BG_IMG}
+          alt="background Image"
+          className="w-full h-full object-cover"
+        />
       </div>
-      <div className="h-screen flex items-center justify-center bg-gray-900">
+
+      <div className="min-h-screen flex items-center justify-center px-4">
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="absolute w-4/12 2xl:w-3/12 bg-black/80 text-white p-10 rounded-lg"
+          className="
+        w-full
+        max-w-sm               
+        sm:max-w-md           
+        md:max-w-lg          
+        xl:max-w-md           
+        bg-black/80 text-white p-8 sm:p-10 rounded-lg"
         >
-          <h1 className="text-3xl mx-2 font-bold mb-6">
+          <h1 className="text-3xl font-bold mb-6">
             {isSignIn ? "Sign In" : "Sign Up"}
           </h1>
           {errorMsg && (
-            <p className="bg-yellow-500/80 p-4 m-2 w-full rounded-md text-black">
+            <p className="bg-yellow-500/70 p-4 mb-4 rounded-md text-black">
               {errorMsg}
             </p>
           )}
@@ -126,42 +137,42 @@ const Login = () => {
                 type="text"
                 placeholder="Full Name"
                 ref={fullName}
-                className="m-2 p-4 border border-gray-400 w-full"
+                className="mb-2 p-3 border border-gray-400 w-full rounded"
               />
-              <p className="text-red-500 px-2">
-                {fullNameError && fullNameError}
-              </p>
+              <p className="text-red-500 text-sm mb-2">{fullNameError}</p>
             </>
           )}
+
           <input
             type="text"
             placeholder="Email"
             ref={email}
-            className="m-2 p-4 border border-gray-400 w-full"
+            className="mb-2 p-3 border border-gray-400 w-full rounded"
           />
-          <p className="text-red-500 px-2">{emailError && emailError}</p>
+          <p className="text-red-500 text-sm mb-2">{emailError}</p>
+
           <input
             type="password"
             placeholder="Password"
             ref={password}
-            className="m-2 p-4 border border-gray-400 w-full"
+            className="mb-2 p-3 border border-gray-400 w-full rounded"
           />
-          <p className="text-red-500 px-2">
+          <div className="text-red-500 text-sm">
             {passwordError &&
-              (passwordError.length === 1
-                ? passwordError.map((err, index) => <p key={index}>{err}</p>)
-                : passwordError.map((err, index) => (
-                    <li key={index}>{err}</li>
-                  )))}
-          </p>
+              passwordError.map((err, index) => <p key={index}>{err}</p>)}
+          </div>
+
           <button
-            className="bg-red-600 w-full p-2 m-2 rounded my-4 cursor-pointer"
+            className="
+          bg-red-600 w-full p-3 rounded mt-4
+          hover:bg-red-700 transition
+        "
             onClick={handleLogin}
           >
             {isSignIn ? "Sign In" : "Sign Up"}
           </button>
 
-          <p className="mx-2 mt-4">
+          <p className="mt-6 text-center text-sm">
             <span className="text-gray-400">
               {isSignIn ? "New to Netflix?" : "Already a user?"}
             </span>

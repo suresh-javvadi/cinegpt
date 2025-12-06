@@ -56,16 +56,16 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute bg-gradient-to-b from-black w-full z-10">
+    <div className="absolute w-full z-10 bg-gradient-to-b from-black px-4 py-2">
       {user ? (
-        <div className="flex justify-between items-center pl-8 pr-2 py-2">
-          <img className="w-1/12" src={NETFLIX_LOGO} alt="logo" />
-          <div className="flex gap-4">
+        <div className="flex justify-between items-center">
+          <img className="w-24 sm:w-32 md:w-40" src={NETFLIX_LOGO} alt="logo" />
+          <div className="flex items-center gap-2 sm:gap-4">
             {showGptSearch && (
               <select
                 name="lang-select"
                 onChange={handleLanguageChange}
-                className="bg-gray-600 rounded-lg px-4"
+                className="bg-gray-600 rounded-lg px-3 py-1 text-sm sm:text-base"
               >
                 {LANGUAGE_OPTIONS.map((lang) => (
                   <option key={lang.value} value={lang.value}>
@@ -74,19 +74,20 @@ const Header = () => {
                 ))}
               </select>
             )}
+
             <button
-              className="px-4 bg-purple-700 rounded-lg cursor-pointer"
+              className="px-3 py-1 sm:px-4 bg-purple-700 rounded-lg text-sm sm:text-base"
               onClick={handleGptSearchView}
             >
               {showGptSearch ? lang[selectedLang]?.homeBtn : "GPT Search"}
             </button>
             <img
-              className="w-10 rounded-lg"
+              className="w-8 sm:w-10 rounded-lg"
               src={PROFILE_IMAGE}
               alt="profile"
             />
             <button
-              className="bg-black text-white font-bold rounded-lg p-2 cursor-pointer"
+              className="bg-black text-white font-bold rounded-lg px-3 py-1 sm:px-4 sm:py-2 text-sm sm:text-base"
               onClick={handleSignOut}
             >
               Sign out
@@ -94,8 +95,8 @@ const Header = () => {
           </div>
         </div>
       ) : (
-        <div>
-          <img className="w-2/12" src={NETFLIX_LOGO} alt="logo" />
+        <div className="flex justify-center sm:justify-start">
+          <img className="w-56 sm:w-48 md:w-56" src={NETFLIX_LOGO} alt="logo" />
         </div>
       )}
     </div>
