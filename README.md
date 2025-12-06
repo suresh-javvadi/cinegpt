@@ -34,6 +34,8 @@
 - Add GPT Search
 - Add GPT search bar
 - Add multi language feature in GPT search page
+- Add GPT powered search bar
+- Add GPT suggestions screen and showing in Movie list
 
 # Features
 

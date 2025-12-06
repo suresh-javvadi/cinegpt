@@ -18,9 +18,6 @@ const Header = () => {
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
 
-  console.log(selectedLang);
-  console.log(lang[selectedLang]);
-
   const handleLanguageChange = (e) => {
     dispatch(changeLanguage(e.target.value));
   };
@@ -71,7 +68,9 @@ const Header = () => {
                 className="bg-gray-600 rounded-lg px-4"
               >
                 {LANGUAGE_OPTIONS.map((lang) => (
-                  <option value={lang.value}>{lang.name}</option>
+                  <option key={lang.value} value={lang.value}>
+                    {lang.name}
+                  </option>
                 ))}
               </select>
             )}
