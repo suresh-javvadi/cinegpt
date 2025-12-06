@@ -3,12 +3,17 @@ import MovieCard from "./MovieCard";
 
 const MoviesList = ({ title, movies }) => {
   return (
-    <div className="pb-4">
-      <h1 className="text-2xl pb-4 font-semibold text-white">{title}</h1>
-      <div className="flex overflow-x-scroll">
-        <div className="flex gap-4">
+    <div>
+      <h1 className="text-xl sm:text-3xl font-semibold text-white mb-3 px-2 sm:px-0">
+        {title}
+      </h1>
+
+      <div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
+        <div className="flex gap-4 px-2 sm:px-0 snap-x snap-mandatory">
           {movies?.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <div key={movie.id} className="snap-start">
+              <MovieCard movie={movie} />
+            </div>
           ))}
         </div>
       </div>

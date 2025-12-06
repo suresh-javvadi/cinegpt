@@ -13,16 +13,18 @@ const Browse = () => {
   usePopularMovies();
 
   return (
-    <div>
+    <div className="relative min-h-screen w-full bg-black text-white overflow-x-hidden">
       <Header />
-      {showGptSearch ? (
-        <GptSearch />
-      ) : (
-        <>
-          <TopContainer />
-          <SecondaryContainer />
-        </>
-      )}
+      <div className="pt-10 sm:pt-0">
+        {showGptSearch ? (
+          <GptSearch />
+        ) : (
+          <>
+            <TopContainer />
+            <SecondaryContainer />
+          </>
+        )}
+      </div>
     </div>
   );
 };
