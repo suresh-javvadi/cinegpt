@@ -27,7 +27,7 @@ const GptSearchBar = () => {
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${import.meta.env.OPENAI_GPT_OSS_20B_KEY}`,
+        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_GPT_OSS_20B_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -44,7 +44,6 @@ const GptSearchBar = () => {
     });
 
     const data = await res.json();
-    console.log("GPT Response:", data.choices[0].message.content);
 
     const gptMovies = data.choices[0].message.content.split(",");
 
@@ -60,19 +59,43 @@ const GptSearchBar = () => {
   };
 
   return (
-    <div className="flex justify-center pt-[10%]">
+    <div className="flex justify-center pt-24 sm:pt-32">
       <form
-        className="w-6/12 p-1 bg-black rounded-lg grid grid-cols-12"
+        className="
+      w-full
+      max-w-xl sm:max-w-2xl        
+      p-2 
+      bg-black/80 
+      rounded-lg 
+      grid grid-cols-12 
+      gap-2
+    "
         onSubmit={(e) => e.preventDefault()}
       >
         <input
           ref={searchTerm}
           type="text"
           placeholder={lang[selectedLang]?.gptSearchPlaceHolder}
-          className="p-4 m-2 bg-white col-span-10 rounded-lg"
+          className="
+        col-span-9 
+        sm:col-span-10 
+        p-3 sm:p-4 
+        bg-white 
+        text-black
+        rounded-lg 
+      "
         />
+
         <button
-          className="bg-red-700 m-2 text-white rounded-lg col-span-2"
+          className="
+        col-span-3 
+        sm:col-span-2 
+        bg-red-700 
+        text-white 
+        rounded-lg 
+        p-3 sm:p-4 
+        font-medium
+      "
           onClick={handleGptSearch}
         >
           {lang[selectedLang]?.search}

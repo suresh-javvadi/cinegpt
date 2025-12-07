@@ -7,18 +7,28 @@ const GptSuggestions = () => {
     (store) => store.gptSearch
   );
 
-  console.log(gptMovieNames, gptMovieResults);
+  if (!gptMovieNames?.length) return null;
+
   return (
-    <div className="p-4 m-4 bg-black/80">
-      <div>
-        {gptMovieNames?.map((movieName, index) => (
-          <MoviesList
-            key={movieName}
-            title={movieName}
-            movies={gptMovieResults[index]}
-          />
-        ))}
-      </div>
+    <div
+      className="
+        mt-8 
+        px-4 sm:px-6 md:px-10 
+        mx-auto 
+        space-y-8
+        text-white
+        bg-black/90
+        rounded-xl
+        p-4
+      "
+    >
+      {gptMovieNames?.map((movieName, index) => (
+        <MoviesList
+          key={movieName}
+          title={movieName}
+          movies={gptMovieResults[index]}
+        />
+      ))}
     </div>
   );
 };

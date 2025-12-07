@@ -13,9 +13,9 @@ const Browse = () => {
   usePopularMovies();
 
   return (
-    <div className="relative min-h-screen w-full bg-black text-white overflow-x-hidden">
+    <div className="relative min-h-screen w-full text-white overflow-x-hidden">
       <Header />
-      <div className="pt-10 sm:pt-0">
+      <div>
         {showGptSearch ? (
           <GptSearch />
         ) : (
