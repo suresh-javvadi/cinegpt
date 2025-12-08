@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Header from "../../components/Header";
-import { loginValidation } from "./loginValidations";
+import { validateSignIn, validateSignUp } from "./loginValidations";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -22,10 +22,12 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState([]);
   const [fullNameError, setFullNameError] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleLogin = () => {
     if (isSignIn) {
-      const { emailErr, passwordErr } = loginValidation(
+      const { emailErr, passwordErr } = validateSignIn(
         email.current.value,
         password.current.value
       );
@@ -33,19 +35,8 @@ const Login = () => {
       setPasswordError(passwordErr);
 
       if (emailErr || passwordErr) return;
-
-      signInWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      )
-        .then(() => {})
-        .catch((error) => {
-          setErrorMsg(getFirebaseErrorMessage(error.code));
-          password.current.value = "";
-        });
     } else {
-      const { emailErr, passwordErr, fullNameErr } = loginValidation(
+      const { emailErr, passwordErr, fullNameErr } = validateSignUp(
         email.current.value,
         password.current.value,
         fullName.current.value
@@ -55,37 +46,62 @@ const Login = () => {
       setFullNameError(fullNameErr);
 
       if (emailErr || passwordErr || fullNameErr) return;
-
-      createUserWithEmailAndPassword(
+    }
+    setIsLoading(true);
+    if (isSignIn) {
+      signInWithEmailAndPassword(
         auth,
         email.current.value,
         password.current.value
       )
-        .then((userCredential) => {
-          const user = userCredential.user;
-          updateProfile(user, {
-            displayName: fullName.current.value,
-          })
-            .then(() => {
-              const { uid, email, displayName } = auth.currentUser;
-
-              dispatch(
-                addUser({
-                  uid: uid,
-                  email: email,
-                  displayName: displayName,
-                })
-              );
-            })
-            .catch((error) => {
-              console.error("Profile update error:", error.message);
-              setErrorMsg("Failed to update profile. Please try again.");
-            });
+        .then(() => {
+          setIsSuccess(true);
+          setTimeout(() => {
+            // redirect after animation finishes
+            // navigate("/browse")
+          }, 3000);
         })
         .catch((error) => {
+          setIsLoading(false);
+          setIsSuccess(false);
           setErrorMsg(getFirebaseErrorMessage(error.code));
+          password.current.value = "";
         });
+
+      return;
     }
+    createUserWithEmailAndPassword(
+      auth,
+      email.current.value,
+      password.current.value
+    )
+      .then((userCredential) => {
+        const user = userCredential.user;
+        return updateProfile(user, {
+          displayName: fullName.current.value,
+        });
+      })
+      .then(() => {
+        const { uid, email, displayName } = auth.currentUser;
+
+        dispatch(
+          addUser({
+            uid,
+            email,
+            displayName,
+          })
+        );
+        setIsSuccess(true);
+
+        setTimeout(() => {
+          // navigate("/browse");
+        }, 3000);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setIsSuccess(false);
+        setErrorMsg(getFirebaseErrorMessage(error.code));
+      });
   };
 
   const handleSignUpClick = () => {
@@ -163,13 +179,37 @@ const Login = () => {
           </div>
 
           <button
-            className="
-          bg-red-600 w-full p-3 rounded mt-4
-          hover:bg-red-700 transition
-        "
             onClick={handleLogin}
+            disabled={isLoading}
+            className={`
+                relative 
+                flex items-center justify-center 
+                bg-red-600 text-white font-semibold
+                rounded-lg transition-all duration-300
+                ${isLoading ? "w-12 h-12 rounded-full p-0" : "w-full p-3 mt-4"}
+                ${isSuccess ? "bg-green-600" : ""}
+                disabled:opacity-70 disabled:cursor-not-allowed
+              `}
           >
-            {isSignIn ? "Sign In" : "Sign Up"}
+            {isLoading && !isSuccess && (
+              <span className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
+            )}
+
+            {isSuccess && (
+              <svg
+                className="w-8 h-8 animate-bounce"
+                fill="none"
+                stroke="white"
+                strokeWidth="4"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+
+            {!isLoading && !isSuccess && (
+              <span>{isSignIn ? "Sign In" : "Sign Up"}</span>
+            )}
           </button>
 
           <p className="mt-6 text-center text-sm">
