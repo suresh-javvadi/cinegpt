@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import PROFILE_IMAGE from "../assets/PROFILE_IMAGE.png";
-import NETFLIX_LOGO from "../assets/Netflix_Logo.png";
+import Logo from "../assets/Logo.png";
 import { auth } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../slices/userSlice";
-import { LANGUAGE_OPTIONS, LOGO } from "../utils/constants";
+import { LANGUAGE_OPTIONS } from "../utils/constants";
 import { toggleGptSearchView } from "../slices/gptSlice";
 import { changeLanguage } from "../slices/configSlice";
 import lang from "../utils/languagesConstants";
@@ -56,10 +56,14 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute w-full z-10 bg-gradient-to-b from-black px-4 py-2">
+    <div className="absolute w-full z-10 px-4 py-2">
       {user ? (
         <div className="flex justify-between items-center">
-          <img className="w-24 sm:w-32 md:w-40" src={NETFLIX_LOGO} alt="logo" />
+          <img
+            className="w-32 sm:w-38 md:w-64 bg-black/80 rounded-full"
+            src={Logo}
+            alt="logo"
+          />
           <div className="flex items-center gap-2 sm:gap-4">
             {showGptSearch && (
               <select
@@ -96,7 +100,11 @@ const Header = () => {
         </div>
       ) : (
         <div className="flex justify-center sm:justify-start">
-          <img className="w-56 sm:w-48 md:w-56" src={NETFLIX_LOGO} alt="logo" />
+          <img
+            className="w-82 sm:w-76 md:w-80 bg-black/80 rounded-full"
+            src={Logo}
+            alt="logo"
+          />
         </div>
       )}
     </div>

@@ -10,7 +10,7 @@ import { auth } from "../../firebase/firebaseConfig";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/userSlice";
-import { LOGIN_BG_IMG } from "../../utils/constants";
+import LOGIN_BG_IMG from "../../assets/Login_BG.jpg";
 
 const Login = () => {
   const dispatch = useDispatch();

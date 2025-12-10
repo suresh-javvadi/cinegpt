@@ -1,6 +1,6 @@
 import React from "react";
 import GptSearchBar from "./GptSearchBar";
-import { LOGIN_BG_IMG } from "../../utils/constants";
+import LOGIN_BG_IMG from "../../assets/Login_BG.jpg";
 import GptSuggestions from "./GptSuggestions";
 
 const GptSearch = () => {
