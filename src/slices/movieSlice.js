@@ -4,7 +4,7 @@ const movieSlice = createSlice({
   name: "movies",
   initialState: {
     nowPlayingMovies: null,
-    movieTrailer: null,
+    movieTrailers: {},
     popularMovies: null,
     topRated: null,
     upcoming: null,
@@ -17,7 +17,8 @@ const movieSlice = createSlice({
       state.popularMovies = action.payload;
     },
     addMovieTrailer: (state, action) => {
-      state.movieTrailer = action.payload;
+      const { movieId, trailer } = action.payload;
+      state.movieTrailers[movieId] = trailer;
     },
     addTopRatedMovies: (state, action) => {
       state.topRated = action.payload;

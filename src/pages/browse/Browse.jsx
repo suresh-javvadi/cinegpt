@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../components/Header";
-import TopContainer from "./topContainer";
+import TopContainer from "./TopContainer";
 import SecondaryContainer from "./SecondaryContainer";
 import GptSearch from "../gptSearch/GptSearch";
 import { useSelector } from "react-redux";
@@ -41,11 +41,6 @@ const Browse = () => {
     addUpcomingMovies,
     (store) => store.movies?.upcoming
   );
-
-  const nowPlayingMovies = useSelector(
-    (store) => store.movies?.nowPlayingMovies
-  );
-  const popularMovies = useSelector((store) => store.movies?.popularMovies);
 
   const isLoading = !nowPlaying || !popular || !topRated || !upcoming;
 
