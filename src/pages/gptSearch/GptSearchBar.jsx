@@ -14,7 +14,7 @@ const GptSearchBar = () => {
   const fetchMovie = async (movie) => {
     const data = await fetch(
       `https://api.themoviedb.org/3/search/movie?query=${movie}&include_adult=false&language=en-US&page=1`,
-      API_GET_OPTIONS
+      API_GET_OPTIONS,
     );
 
     const json = await data.json();
@@ -30,56 +30,118 @@ const GptSearchBar = () => {
     setIsSuccess(false);
 
     try {
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
+      const firstRes = await fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "openrouter/free",
+            reasoning: { enabled: true },
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are a precise movie recommendation engine. Accuracy and formatting are critical.",
+              },
+              {
+                role: "user",
+                content: `Recommend movies based on this query:
+                          "${query}"
+                          Rules:
+                          - Use real, well-known movies only
+                          - Exactly 5 movie titles
+                          - No numbering
+                          - No explanations
+                          - Comma-separated
+                          - Single line`,
+              },
+            ],
+          }),
         },
-        body: JSON.stringify({
-          model: "nousresearch/hermes-3-llama-3.1-405b:free",
-          messages: [
-            {
-              role: "user",
-              content: `
-        You are a movie recommendation engine.
-        Based on the query: "${query}", recommend movies.
-        Requirements:
-        - Exactly 5 movies
-        - Only movie names
-        - Comma-separated single line
-      `,
-            },
-          ],
-        }),
-      });
+      );
 
-      // ---- Handle failed HTTP responses ----
-      if (!res.ok) {
-        console.error("OpenRouter Error:", res.status, await res.text());
-        throw new Error(`OpenRouter API error: ${res.status}`);
+      if (!firstRes.ok) {
+        throw new Error(`First OpenRouter call failed: ${firstRes.status}`);
       }
 
-      const data = await res.json();
+      const firstData = await firstRes.json();
+      const assistantMessage = firstData?.choices?.[0]?.message;
 
-      if (!data?.choices?.[0]?.message?.content) {
-        throw new Error("Invalid API response format");
+      if (!assistantMessage?.content) {
+        throw new Error("Invalid first OpenRouter response");
       }
 
-      let gptMovies = data.choices[0].message.content
+      /* -------------------- STEP 2: VERIFICATION & CORRECTION -------------------- */
+
+      const secondRes = await fetch(
+        "https://openrouter.ai/api/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "openrouter/free",
+            messages: [
+              {
+                role: "user",
+                content: `Recommend movies based on:
+                          "${query}"`,
+              },
+              {
+                role: "assistant",
+                content: assistantMessage.content,
+                reasoning_details: assistantMessage.reasoning_details, // 🔑 critical
+              },
+              {
+                role: "user",
+                content: `Check your previous answer carefully.
+                          Fix any mistakes.
+                          Ensure:
+                          - Exactly 5 real movie titles
+                          - Correct spelling
+                          - No duplicates
+                          - Comma-separated
+                          - Single line only
+                          Return ONLY the corrected movie list.`,
+              },
+            ],
+          }),
+        },
+      );
+
+      if (!secondRes.ok) {
+        throw new Error(`Second OpenRouter call failed: ${secondRes.status}`);
+      }
+
+      const secondData = await secondRes.json();
+      const finalContent = secondData?.choices?.[0]?.message?.content;
+
+      if (!finalContent) {
+        throw new Error("Invalid final OpenRouter response");
+      }
+
+      const gptMovies = finalContent
         .split(",")
         .map((m) => m.trim())
-        .filter((m) => m.length > 0);
+        .filter(Boolean)
+        .slice(0, 5);
 
-      gptMovies = gptMovies.slice(0, 5);
+      if (gptMovies.length !== 5) {
+        console.warn("GPT output still imperfect:", finalContent);
+      }
 
       const movieResults = await Promise.all(
-        gptMovies.map((movie) => fetchMovie(movie))
+        gptMovies.map((movie) => fetchMovie(movie)),
       );
 
       dispatch(addGptMovieResult({ movieNames: gptMovies, movieResults }));
       searchTerm.current.value = "";
-
       setIsSuccess(true);
       setTimeout(() => setIsSuccess(false), 1200);
     } catch (err) {
