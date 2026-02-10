@@ -10,7 +10,7 @@ import { auth } from "../../firebase/firebaseConfig";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/userSlice";
-import LOGIN_BG_IMG from "../../assets/Login_BG.jpg";
+import LOGIN_BG_IMG from "../../assets/Login_Bg.jpg";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ const Login = () => {
     if (isSignIn) {
       const { emailErr, passwordErr } = validateSignIn(
         email.current.value,
-        password.current.value
+        password.current.value,
       );
       setEmailError(emailErr);
       setPasswordError(passwordErr);
@@ -39,7 +39,7 @@ const Login = () => {
       const { emailErr, passwordErr, fullNameErr } = validateSignUp(
         email.current.value,
         password.current.value,
-        fullName.current.value
+        fullName.current.value,
       );
       setEmailError(emailErr);
       setPasswordError(passwordErr);
@@ -52,7 +52,7 @@ const Login = () => {
       signInWithEmailAndPassword(
         auth,
         email.current.value,
-        password.current.value
+        password.current.value,
       )
         .then(() => {
           setIsSuccess(true);
@@ -73,7 +73,7 @@ const Login = () => {
     createUserWithEmailAndPassword(
       auth,
       email.current.value,
-      password.current.value
+      password.current.value,
     )
       .then((userCredential) => {
         const user = userCredential.user;
@@ -89,7 +89,7 @@ const Login = () => {
             uid,
             email,
             displayName,
-          })
+          }),
         );
         setIsSuccess(true);
 
