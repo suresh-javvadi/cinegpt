@@ -10,7 +10,7 @@ const useMovieTrailer = (movieId) => {
   );
 
   useEffect(() => {
-    if (!movieId || trailer) return;
+    if (!movieId || trailer !== undefined) return;
 
     fetchMovieDetails();
   }, [movieId, trailer, dispatch]);
@@ -30,14 +30,12 @@ const useMovieTrailer = (movieId) => {
       const selectedTrailer =
         trailers[0] || json.results.find((v) => v.site === "YouTube");
 
-      if (selectedTrailer) {
-        dispatch(
-          addMovieTrailer({
-            movieId,
-            trailer: selectedTrailer,
-          })
-        );
-      }
+      dispatch(
+        addMovieTrailer({
+          movieId,
+          trailer: selectedTrailer ?? null,
+        })
+      );
     } catch (err) {
       console.error("Failed to fetch trailer", err);
     }

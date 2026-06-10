@@ -1,6 +1,6 @@
 import React from "react";
 import GptSearchBar from "./GptSearchBar";
-import LOGIN_BG_IMG from "../../assets/Login_Bg.jpg";
+import loginBg from "../../assets/login-bg.webp";
 import GptSuggestions from "./GptSuggestions";
 
 const GptSearch = () => {
@@ -8,7 +8,7 @@ const GptSearch = () => {
     <div className="relative min-h-screen w-full overflow-x-hidden">
       <div className="fixed inset-0 -z-10 h-screen">
         <img
-          src={LOGIN_BG_IMG}
+          src={loginBg}
           alt="background"
           className="w-full h-full object-cover"
         />

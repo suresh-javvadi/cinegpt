@@ -1,11 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import { MOVIE_IMAGE_URL } from "../../utils/constants";
 
 const MovieCard = ({ movie }) => {
+  const navigate = useNavigate();
   if (!movie.poster_path) return null;
 
   return (
     <div
+      onClick={() => navigate(`/movie/${movie.id}`)}
       className="
         min-w-[120px]
         sm:min-w-[150px]

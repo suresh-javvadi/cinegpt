@@ -188,7 +188,7 @@ const GptSearchBar = () => {
     font-medium 
     flex items-center justify-center
     transition-all duration-300
-    ${isLoading ? "bg-red-800 w-12" : "bg-red-700 p-3 sm:p-4 text-white"}
+    ${isLoading ? "bg-red-800 w-12 cursor-not-allowed" : "bg-red-700 p-3 sm:p-4 text-white cursor-pointer"}
     ${isSuccess ? "bg-green-600" : ""}
   `}
         >

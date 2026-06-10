@@ -20,29 +20,28 @@ const Browse = () => {
   const topRated = useSelector((store) => store.movies?.topRated);
   const upcoming = useSelector((store) => store.movies?.upcoming);
 
-  useFetchMovies(
+  const { error: nowPlayingError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/now_playing",
     addNowPlayingMovies,
     (store) => store.movies?.nowPlayingMovies
   );
-
-  useFetchMovies(
+  const { error: popularError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/popular",
     addPopularMovies,
     (store) => store.movies?.popularMovies
   );
-  useFetchMovies(
+  const { error: topRatedError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/top_rated",
     addTopRatedMovies,
     (store) => store.movies?.topRated
   );
-  useFetchMovies(
+  const { error: upcomingError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/upcoming",
     addUpcomingMovies,
     (store) => store.movies?.upcoming
   );
 
-  const isLoading = !nowPlaying || !popular || !topRated || !upcoming;
+  const isLoading = !nowPlaying && !nowPlayingError;
 
   return (
     <div className="relative min-h-screen w-full text-white overflow-x-hidden">
@@ -55,7 +54,9 @@ const Browse = () => {
         ) : (
           <>
             <TopContainer />
-            <SecondaryContainer />
+            <SecondaryContainer
+              errors={{ nowPlayingError, popularError, topRatedError, upcomingError }}
+            />
           </>
         )}
       </div>

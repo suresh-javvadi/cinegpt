@@ -10,7 +10,7 @@ import { auth } from "../../firebase/firebaseConfig";
 import { getFirebaseErrorMessage } from "../../firebase/firebaseErrors";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../slices/userSlice";
-import LOGIN_BG_IMG from "../../assets/Login_Bg.jpg";
+import loginBg from "../../assets/login-bg.webp";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -122,7 +122,7 @@ const Login = () => {
       <Header />
       <div className="absolute inset-0 -z-10">
         <img
-          src={LOGIN_BG_IMG}
+          src={loginBg}
           alt="background Image"
           className="w-full h-full object-cover"
         />
@@ -214,7 +214,7 @@ const Login = () => {
 
           <p className="mt-6 text-center text-sm">
             <span className="text-gray-400">
-              {isSignIn ? "New to Netflix?" : "Already a user?"}
+              {isSignIn ? "New to CineGPT?" : "Already a user?"}
             </span>
             <span
               className="underline cursor-pointer ml-1 font-bold"
