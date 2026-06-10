@@ -10,19 +10,20 @@ const MovieCard = ({ movie }) => {
     <div
       onClick={() => navigate(`/movie/${movie.id}`)}
       className="
-        min-w-[120px]
+        min-w-[100px]
         sm:min-w-[150px]
-        md:min-w-[180px]
+        md:min-w-[170px]
         lg:min-w-[200px]
 
-        h-[180px] sm:h-[225px] md:h-[270px] lg:h-[300px]
-        rounded-lg 
+        h-[150px] sm:h-[225px] md:h-[255px] lg:h-[300px]
+        rounded-lg
         overflow-hidden
         cursor-pointer
-        transform 
-        transition 
-        duration-300 
+        transform
+        transition
+        duration-300
         hover:scale-105
+        active:scale-95
       "
     >
       <img

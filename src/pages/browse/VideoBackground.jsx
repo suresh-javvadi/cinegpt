@@ -10,11 +10,11 @@ const VideoBackground = ({ movieId }) => {
 
   useMovieTrailer(movieId);
 
-  // undefined = still fetching — plain black, VideoTitle overlay visible on top
+  // undefined = still fetching — plain black
   if (movieTrailer === undefined) {
     return (
-      <div className="relative w-full overflow-hidden">
-        <div className="w-full aspect-video bg-black" />
+      <div className="relative w-full overflow-hidden bg-black">
+        <div className="w-full aspect-[4/3] sm:aspect-video" />
       </div>
     );
   }
@@ -26,10 +26,10 @@ const VideoBackground = ({ movieId }) => {
     <div className="relative w-full overflow-hidden bg-black">
       <iframe
         key={movieTrailer.key}
-        className="w-full aspect-video transition-opacity duration-700"
-        src={`https://www.youtube.com/embed/${movieTrailer?.key}?autoplay=1&mute=1&loop=1&playlist=${movieTrailer?.key}`}
+        className="w-full aspect-[4/3] sm:aspect-video transition-opacity duration-700 pointer-events-none"
+        src={`https://www.youtube.com/embed/${movieTrailer.key}?autoplay=1&mute=1&loop=1&playlist=${movieTrailer.key}&controls=0&disablekb=1&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3`}
         title="YouTube video player"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       />
     </div>
   );

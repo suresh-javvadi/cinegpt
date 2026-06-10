@@ -152,7 +152,7 @@ const GptSearchBar = () => {
   };
 
   return (
-    <div className="flex justify-center pt-24 sm:pt-32">
+    <div className="flex justify-center pt-16 sm:pt-24">
       <form
         className="
       w-full

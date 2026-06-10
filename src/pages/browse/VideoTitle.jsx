@@ -13,24 +13,24 @@ const VideoTitle = ({ movie }) => {
       flex flex-col
       justify-end sm:justify-center
       text-white
-      bg-gradient-to-r from-black/85 via-black/40 to-transparent
-      px-5 sm:px-10 md:px-16
-      pb-14 sm:pb-0
-      space-y-3 sm:space-y-4
+      bg-gradient-to-r from-black/80 via-black/30 to-transparent
+      px-4 sm:px-10 md:px-16
+      pb-10 sm:pb-0
+      space-y-2 sm:space-y-4
     ">
       {/* Badge */}
       <div className="flex items-center gap-2">
-        <span className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+        <span className="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Now Playing
         </span>
       </div>
 
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black max-w-xl leading-tight drop-shadow-lg">
+      <h1 className="text-lg sm:text-3xl md:text-5xl lg:text-6xl font-black max-w-[60%] sm:max-w-xl leading-tight drop-shadow-lg line-clamp-2">
         {title}
       </h1>
 
-      {/* Overview */}
+      {/* Overview — hidden on small mobile, shown sm+ */}
       <p className="
         hidden sm:block
         text-sm md:text-base
@@ -44,45 +44,65 @@ const VideoTitle = ({ movie }) => {
       </p>
 
       {/* Buttons */}
-      <div className="flex items-center gap-3 pt-1">
-        <button
-          onClick={() =>
-            movieTrailer?.key &&
-            window.open(`https://www.youtube.com/watch?v=${movieTrailer.key}`, "_blank")
-          }
-          className={`
-            flex items-center gap-2
-            bg-white text-black
-            font-bold text-sm sm:text-base
-            px-5 sm:px-7 py-2 sm:py-2.5
-            rounded-lg
-            hover:bg-white/85
-            transition-all duration-200
-            shadow-lg
-            ${movieTrailer?.key ? "cursor-pointer" : "cursor-not-allowed opacity-60"}
-          `}
-        >
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-          Play
-        </button>
+      <div className="flex items-center gap-2 sm:gap-3 pt-0.5">
+        {movieTrailer?.key ? (
+          <a
+            href={`https://www.youtube.com/watch?v=${movieTrailer.key}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              flex items-center gap-1.5
+              bg-white text-black
+              font-bold text-xs sm:text-sm md:text-base
+              px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5
+              rounded-lg
+              hover:bg-white/85
+              active:scale-95
+              transition-all duration-200
+              shadow-lg
+              cursor-pointer
+            "
+          >
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Play
+          </a>
+        ) : (
+          <button
+            disabled
+            className="
+              flex items-center gap-1.5
+              bg-white text-black
+              font-bold text-xs sm:text-sm md:text-base
+              px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5
+              rounded-lg
+              cursor-not-allowed opacity-60
+            "
+          >
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Play
+          </button>
+        )}
 
         <button
           onClick={() => navigate(`/movie/${id}`)}
           className="
-            flex items-center gap-2
+            flex items-center gap-1.5
             bg-white/20 backdrop-blur-sm
             border border-white/30
-            text-white font-semibold text-sm sm:text-base
-            px-5 sm:px-7 py-2 sm:py-2.5
+            text-white font-semibold text-xs sm:text-sm md:text-base
+            px-3 sm:px-6 md:px-7 py-1.5 sm:py-2.5
             rounded-lg
             hover:bg-white/30
+            active:scale-95
             transition-all duration-200
             cursor-pointer
           "
         >
-          <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4M12 8h.01" />
           </svg>

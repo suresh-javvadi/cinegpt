@@ -51,12 +51,12 @@ const Header = () => {
           />
 
           {/* Right controls */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3">
             {/* Language selector — only in GPT mode */}
             {showGptSearch && (
               <select
                 onChange={handleLanguageChange}
-                className="bg-black/60 border border-white/20 text-white rounded-lg px-3 py-1.5 text-sm backdrop-blur-sm focus:outline-none focus:border-white/50 transition cursor-pointer"
+                className="bg-black/60 border border-white/20 text-white rounded-lg px-2 sm:px-3 py-1.5 text-xs sm:text-sm max-w-[90px] sm:max-w-none backdrop-blur-sm focus:outline-none focus:border-white/50 transition cursor-pointer"
               >
                 {LANGUAGE_OPTIONS.map((l) => (
                   <option key={l.value} value={l.value} className="bg-black">
@@ -69,7 +69,7 @@ const Header = () => {
             {/* GPT Search toggle */}
             <button
               onClick={handleGptSearchView}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 showGptSearch
                   ? "bg-white text-black hover:bg-white/90"
                   : "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 shadow-lg shadow-purple-900/40"
@@ -109,7 +109,7 @@ const Header = () => {
             {/* Sign out */}
             <button
               onClick={handleSignOut}
-              className="flex items-center gap-1.5 bg-black/50 border border-white/20 hover:bg-red-600/80 hover:border-red-500 text-white text-sm px-3 py-1.5 rounded-lg transition-all duration-200 backdrop-blur-sm cursor-pointer"
+              className="flex items-center gap-1 sm:gap-1.5 bg-black/50 border border-white/20 hover:bg-red-600/80 hover:border-red-500 text-white text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 rounded-lg transition-all duration-200 backdrop-blur-sm cursor-pointer"
             >
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />

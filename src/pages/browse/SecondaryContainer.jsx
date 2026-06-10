@@ -9,8 +9,8 @@ const SecondaryContainer = ({ errors = {} }) => {
   const upcoming = allMovies.upcoming?.filter((m) => !nowPlayingIds.has(m.id)) ?? null;
 
   return (
-    <div className="bg-black px-2 sm:px-6 py-6 space-y-8">
-      <div className="-mt-12 sm:-mt-36 md:-mt-48 relative z-10">
+    <div className="bg-black px-2 sm:px-4 md:px-6 py-4 sm:py-6 space-y-6 sm:space-y-8">
+      <div className="-mt-6 sm:-mt-28 md:-mt-40 relative z-10">
         <MoviesList title="Now Playing" movies={allMovies.nowPlayingMovies} error={errors.nowPlayingError} />
       </div>
       <MoviesList title="Popular Movies" movies={allMovies.popularMovies} error={errors.popularError} />

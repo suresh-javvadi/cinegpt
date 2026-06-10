@@ -56,10 +56,12 @@ const MediaSection = ({ videos, images }) => {
             {allVideos.map((v, i) => {
               const isFeatured = i === 0;
               return (
-                <div
+                <a
                   key={v.id}
-                  onClick={() => window.open(`https://www.youtube.com/watch?v=${v.key}`, "_blank")}
-                  className={`flex-shrink-0 group cursor-pointer ${isFeatured ? "w-80 sm:w-[28rem]" : "w-64 sm:w-80"}`}
+                  href={`https://www.youtube.com/watch?v=${v.key}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex-shrink-0 group cursor-pointer ${isFeatured ? "w-64 sm:w-80 md:w-[28rem]" : "w-48 sm:w-64 md:w-80"}`}
                 >
                   <div className={`relative aspect-video rounded-xl overflow-hidden border ${isFeatured ? "border-white/25" : "border-white/10"}`}>
                     <img
@@ -92,7 +94,7 @@ const MediaSection = ({ videos, images }) => {
                   </div>
                   <p className={`text-gray-300 mt-2 truncate ${isFeatured ? "text-sm font-medium" : "text-xs"}`}>{v.name}</p>
                   <p className="text-gray-500 text-xs">{v.type}</p>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -111,7 +113,7 @@ const MediaSection = ({ videos, images }) => {
                 href={`https://image.tmdb.org/t/p/original${img.file_path}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-shrink-0 w-64 sm:w-80 aspect-video rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition"
+                className="flex-shrink-0 w-56 sm:w-72 md:w-80 aspect-video rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
@@ -136,7 +138,7 @@ const MediaSection = ({ videos, images }) => {
                 href={`https://image.tmdb.org/t/p/original${img.file_path}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-shrink-0 w-32 sm:w-40 rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition"
+                className="flex-shrink-0 w-28 sm:w-36 md:w-40 rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w342${img.file_path}`}
@@ -312,11 +314,11 @@ const MovieDetail = () => {
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-10 md:px-16 -mt-28 sm:-mt-36 relative z-10">
-        <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
+      <div className="px-3 sm:px-8 md:px-16 -mt-20 sm:-mt-32 md:-mt-40 relative z-10">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 md:gap-10 items-start">
           {/* Poster */}
           {movie.poster_path && (
-            <div className="hidden sm:block flex-shrink-0 w-40 md:w-52 rounded-xl overflow-hidden shadow-2xl border border-white/10">
+            <div className="hidden sm:block flex-shrink-0 w-36 md:w-48 lg:w-52 rounded-xl overflow-hidden shadow-2xl border border-white/10">
               <img
                 src={`${MOVIE_IMAGE_URL}${movie.poster_path}`}
                 alt={movie.title}
@@ -328,7 +330,7 @@ const MovieDetail = () => {
           {/* Info */}
           <div className="flex-1 space-y-4 pt-2">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">{movie.title}</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">{movie.title}</h1>
               {movie.original_title && movie.original_title !== movie.title && (
                 <p className="text-gray-500 text-sm mt-1">
                   Original title: <span className="text-gray-300 italic">{movie.original_title}</span>
@@ -427,15 +429,17 @@ const MovieDetail = () => {
             {/* Buttons */}
             <div className="flex gap-3 pt-1">
               {trailer && (
-                <button
-                  onClick={() => window.open(`https://www.youtube.com/watch?v=${trailer.key}`, "_blank")}
-                  className="flex items-center gap-2 bg-white text-black px-6 py-2.5 rounded-lg font-semibold hover:opacity-80 transition"
+                <a
+                  href={`https://www.youtube.com/watch?v=${trailer.key}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-white text-black px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg font-semibold text-sm sm:text-base hover:opacity-80 active:scale-95 transition cursor-pointer"
                 >
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                   Play Trailer
-                </button>
+                </a>
               )}
             </div>
           </div>
@@ -463,7 +467,7 @@ const MovieDetail = () => {
             <h2 className="text-xl font-bold mb-4">Top Cast</h2>
             <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
               {cast.map((person) => (
-                <div key={person.id} className="flex-shrink-0 w-24 sm:w-28 text-center">
+                <div key={person.id} className="flex-shrink-0 w-20 sm:w-24 md:w-28 text-center">
                   {person.profile_path ? (
                     <img
                       src={`${MOVIE_IMAGE_URL}${person.profile_path}`}
@@ -535,7 +539,7 @@ const MovieDetail = () => {
         {similar?.results?.length > 0 && (
           <div className="mt-12 mb-16">
             <h2 className="text-xl font-bold mb-4">More Like This</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
               {similar.results
                 .filter((m) => m.poster_path)
                 .slice(0, 10)

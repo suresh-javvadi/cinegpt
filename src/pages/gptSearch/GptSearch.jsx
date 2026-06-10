@@ -14,7 +14,7 @@ const GptSearch = () => {
         />
       </div>
 
-      <div className="pt-12 sm:pt-18 px-4 sm:px-6 md:px-10 w-full mb-6">
+      <div className="pt-14 sm:pt-16 px-3 sm:px-6 md:px-10 w-full mb-6">
         <GptSearchBar />
         <GptSuggestions />
       </div>
