@@ -4,8 +4,8 @@ import MovieCard from "./MovieCard";
 const SkeletonCard = () => (
   <div className="
     flex-shrink-0
-    min-w-[100px] sm:min-w-[150px] md:min-w-[180px] lg:min-w-[200px]
-    h-[150px] sm:h-[225px] md:h-[270px] lg:h-[300px]
+    w-[29vw] sm:w-[150px] md:w-[180px] lg:w-[200px]
+    aspect-[2/3]
     bg-neutral-800 rounded-lg animate-pulse
   " />
 );

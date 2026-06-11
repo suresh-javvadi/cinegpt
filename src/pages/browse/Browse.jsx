@@ -2,7 +2,6 @@ import React from "react";
 import Header from "../../components/Header";
 import TopContainer from "./TopContainer";
 import SecondaryContainer from "./SecondaryContainer";
-import GptSearch from "../gptSearch/GptSearch";
 import { useSelector } from "react-redux";
 import ScreenLoader from "../../components/ScreenLoader";
 import useFetchMovies from "../../hooks/useFetchMovies";
@@ -14,7 +13,6 @@ import {
 } from "../../slices/movieSlice";
 
 const Browse = () => {
-  const showGptSearch = useSelector((store) => store?.gptSearch?.showGptSearch);
   const nowPlaying = useSelector((store) => store.movies?.nowPlayingMovies);
   const popular = useSelector((store) => store.movies?.popularMovies);
   const topRated = useSelector((store) => store.movies?.topRated);
@@ -49,8 +47,6 @@ const Browse = () => {
       <div>
         {isLoading ? (
           <ScreenLoader />
-        ) : showGptSearch ? (
-          <GptSearch />
         ) : (
           <>
             <TopContainer />

@@ -2,8 +2,8 @@ import React from "react";
 
 const TrailerUnavailable = () => (
   <div
-    className="relative w-full overflow-hidden rounded-2xl flex items-center justify-center"
-    style={{ aspectRatio: "16/9", background: "#060608" }}
+    className="relative w-full overflow-hidden rounded-2xl flex items-center justify-center aspect-[4/3] sm:aspect-video"
+    style={{ background: "#060608" }}
   >
     {/* Scanline overlay */}
     <div
@@ -33,7 +33,7 @@ const TrailerUnavailable = () => (
 
     {/* Levitating content */}
     <div
-      className="relative flex flex-col items-center"
+      className="relative flex flex-col items-center scale-[0.8] sm:scale-100 origin-center"
       style={{ animation: "levitate 5s ease-in-out infinite" }}
     >
       {/* Reel + orbit system */}

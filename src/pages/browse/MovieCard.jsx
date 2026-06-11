@@ -10,12 +10,8 @@ const MovieCard = ({ movie }) => {
     <div
       onClick={() => navigate(`/movie/${movie.id}`)}
       className="
-        min-w-[100px]
-        sm:min-w-[150px]
-        md:min-w-[170px]
-        lg:min-w-[200px]
-
-        h-[150px] sm:h-[225px] md:h-[255px] lg:h-[300px]
+        w-[29vw] sm:w-[150px] md:w-[170px] lg:w-[200px]
+        aspect-[2/3]
         rounded-lg
         overflow-hidden
         cursor-pointer

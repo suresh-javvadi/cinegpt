@@ -8,7 +8,8 @@ const VideoTitle = ({ movie }) => {
   const movieTrailer = useSelector((store) => store.movies?.movieTrailers[id]);
 
   return (
-    <div className="
+    <div
+      className="
       absolute inset-0 z-10
       flex flex-col
       justify-end sm:justify-center
@@ -17,7 +18,8 @@ const VideoTitle = ({ movie }) => {
       px-4 sm:px-10 md:px-16
       pb-10 sm:pb-0
       space-y-2 sm:space-y-4
-    ">
+    "
+    >
       {/* Badge */}
       <div className="flex items-center gap-2">
         <span className="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider">
@@ -31,15 +33,16 @@ const VideoTitle = ({ movie }) => {
       </h1>
 
       {/* Overview — hidden on small mobile, shown sm+ */}
-      <p className="
-        hidden sm:block
+      <p
+        className="
+        hidden sm:line-clamp-3
         text-sm md:text-base
         max-w-xs md:max-w-lg
         text-gray-200
-        line-clamp-3
         leading-relaxed
         drop-shadow
-      ">
+      "
+      >
         {overview}
       </p>
 
@@ -63,7 +66,13 @@ const VideoTitle = ({ movie }) => {
               cursor-pointer
             "
           >
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
+            <svg
+              width="14"
+              height="14"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              className="sm:w-[18px] sm:h-[18px]"
+            >
               <path d="M8 5v14l11-7z" />
             </svg>
             Play
@@ -80,7 +89,13 @@ const VideoTitle = ({ movie }) => {
               cursor-not-allowed opacity-60
             "
           >
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
+            <svg
+              width="14"
+              height="14"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              className="sm:w-[18px] sm:h-[18px]"
+            >
               <path d="M8 5v14l11-7z" />
             </svg>
             Play
@@ -102,7 +117,15 @@ const VideoTitle = ({ movie }) => {
             cursor-pointer
           "
         >
-          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" className="sm:w-[18px] sm:h-[18px]">
+          <svg
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            viewBox="0 0 24 24"
+            className="sm:w-[18px] sm:h-[18px]"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M12 16v-4M12 8h.01" />
           </svg>

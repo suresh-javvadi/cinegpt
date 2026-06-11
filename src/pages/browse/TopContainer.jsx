@@ -47,9 +47,13 @@ const TopContainer = () => {
         "
       >
         <svg
-          width="16" height="16"
-          fill="none" stroke="currentColor"
-          strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           viewBox="0 0 24 24"
           className="
             sm:w-7 sm:h-7
@@ -83,9 +87,13 @@ const TopContainer = () => {
         "
       >
         <svg
-          width="16" height="16"
-          fill="none" stroke="currentColor"
-          strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           viewBox="0 0 24 24"
           className="
             sm:w-7 sm:h-7
@@ -98,7 +106,7 @@ const TopContainer = () => {
       </button>
 
       {/* Dot indicators */}
-      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+      <div className="absolute bottom-6 sm:bottom-32 md:bottom-44 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
         {[...Array(dotCount)].map((_, i) => (
           <button
             key={i}
