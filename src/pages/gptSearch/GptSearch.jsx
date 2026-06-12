@@ -6,7 +6,7 @@ import Header from "../../components/Header";
 
 const GptSearch = () => {
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden">
+    <div className="relative min-h-screen w-full overflow-x-hidden pb-20 sm:pb-0">
       <Header />
       {/* Background with stronger dark overlay for distinct identity */}
       <div className="fixed inset-0 -z-10">

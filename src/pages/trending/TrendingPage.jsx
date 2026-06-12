@@ -41,7 +41,7 @@ const TrendingPage = () => {
   const current = movies[activeTab];
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-black text-white overflow-x-hidden pb-20 sm:pb-0">
       <Header />
 
       <div className="pt-20 sm:pt-24 px-4 sm:px-8 md:px-12 pb-12">
@@ -76,10 +76,16 @@ const TrendingPage = () => {
           ))}
         </div>
 
-        {/* Loading */}
+        {/* Skeleton */}
         {loading && (
-          <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
+            {Array(18).fill(0).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white/[0.07] animate-pulse" />
+                <div className="h-3 rounded bg-white/[0.07] animate-pulse" />
+                <div className="h-3 w-2/3 rounded bg-white/[0.07] animate-pulse" />
+              </div>
+            ))}
           </div>
         )}
 

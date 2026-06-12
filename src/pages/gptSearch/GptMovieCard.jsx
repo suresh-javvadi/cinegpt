@@ -12,7 +12,7 @@ const GptMovieCard = ({ movie }) => {
   return (
     <div
       onClick={() => navigate(`/movie/${movie.id}`)}
-      className="w-28 sm:w-36 flex-shrink-0 cursor-pointer group"
+      className="w-full flex-shrink-0 cursor-pointer group"
     >
       <div className="rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
         <img

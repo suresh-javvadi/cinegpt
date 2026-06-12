@@ -21,28 +21,28 @@ const Browse = () => {
   const { error: nowPlayingError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/now_playing",
     addNowPlayingMovies,
-    (store) => store.movies?.nowPlayingMovies
+    (store) => store.movies?.nowPlayingMovies,
   );
   const { error: popularError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/popular",
     addPopularMovies,
-    (store) => store.movies?.popularMovies
+    (store) => store.movies?.popularMovies,
   );
   const { error: topRatedError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/top_rated",
     addTopRatedMovies,
-    (store) => store.movies?.topRated
+    (store) => store.movies?.topRated,
   );
   const { error: upcomingError } = useFetchMovies(
     "https://api.themoviedb.org/3/movie/upcoming",
     addUpcomingMovies,
-    (store) => store.movies?.upcoming
+    (store) => store.movies?.upcoming,
   );
 
   const isLoading = !nowPlaying && !nowPlayingError;
 
   return (
-    <div className="relative min-h-screen w-full text-white overflow-x-hidden">
+    <div className="relative min-h-screen w-full text-white overflow-x-hidden pb-10">
       <Header />
       <div>
         {isLoading ? (
@@ -51,7 +51,12 @@ const Browse = () => {
           <>
             <TopContainer />
             <SecondaryContainer
-              errors={{ nowPlayingError, popularError, topRatedError, upcomingError }}
+              errors={{
+                nowPlayingError,
+                popularError,
+                topRatedError,
+                upcomingError,
+              }}
             />
           </>
         )}

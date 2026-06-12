@@ -29,7 +29,7 @@ const SearchPage = () => {
       try {
         const res = await fetch(
           `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query.trim())}&include_adult=false&page=1`,
-          API_GET_OPTIONS
+          API_GET_OPTIONS,
         );
         const data = await res.json();
         setResults(data.results?.filter((m) => m.poster_path) ?? []);
@@ -44,52 +44,54 @@ const SearchPage = () => {
   }, [query]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pb-20 sm:pb-0">
       <Header />
-      {/* Sticky search bar — sits below the absolute Header */}
-      <div className="sticky top-0 z-30 bg-black/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3 pt-16 flex items-center gap-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer"
-        >
-          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-            <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
 
-        <div className="flex-1 flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl px-4 py-2.5">
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" className="text-gray-400 flex-shrink-0">
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" strokeLinecap="round" />
-          </svg>
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search movies — Telugu, Hindi, Hollywood..."
-            className="flex-1 bg-transparent text-white placeholder-gray-500 text-sm sm:text-base focus:outline-none"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery("")}
-              className="text-gray-500 hover:text-white transition cursor-pointer"
-            >
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+      <div className="pt-20 sm:pt-24 px-4 sm:px-8">
+        {/* Search bar */}
+        <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div className="flex-1 flex items-center gap-2 bg-white/10 border border-white/15 rounded-xl px-4 py-2.5">
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" className="text-gray-400 flex-shrink-0">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+            </svg>
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search movies — Telugu, Hindi, Hollywood..."
+              className="flex-1 bg-transparent text-white placeholder-gray-500 text-sm sm:text-base focus:outline-none"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="text-gray-500 hover:text-white transition cursor-pointer">
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Results area */}
-      <div className="px-4 sm:px-8 py-6">
-
-        {/* Loading */}
+        {/* Skeleton */}
         {isLoading && (
-          <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
+            {Array(12).fill(0).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white/[0.07] animate-pulse" />
+                <div className="h-3 rounded bg-white/[0.07] animate-pulse" />
+                <div className="h-3 w-2/3 rounded bg-white/[0.07] animate-pulse" />
+              </div>
+            ))}
           </div>
         )}
 

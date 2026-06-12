@@ -67,10 +67,10 @@ const GenrePage = () => {
   }, [loading, page, totalPages]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pb-20 sm:pb-0">
       <Header />
 
-      <div className="pt-20 sm:pt-24 px-4 sm:px-8 md:px-12 pb-16">
+      <div className="pt-20 sm:pt-24 px-4 sm:px-8 md:px-12 xl:px-16 2xl:px-24 pb-16 max-w-[1800px] mx-auto">
         {/* Header row */}
         <div className="flex items-start sm:items-center justify-between gap-4 mb-8 flex-col sm:flex-row">
           <div className="flex items-center gap-3">
@@ -102,19 +102,32 @@ const GenrePage = () => {
           </select>
         </div>
 
-        {/* Grid */}
-        {movies.length > 0 && (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 sm:gap-4">
-            {movies.map((movie) => (
-              <GptMovieCard key={movie.id} movie={movie} />
+        {/* Initial skeleton */}
+        {loading && page === 1 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9 gap-3 sm:gap-4 2xl:gap-5">
+            {Array(18).fill(0).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white/[0.07] animate-pulse" />
+                <div className="h-3 rounded bg-white/[0.07] animate-pulse" />
+                <div className="h-3 w-2/3 rounded bg-white/[0.07] animate-pulse" />
+              </div>
             ))}
           </div>
         )}
 
-        {/* Loading spinner */}
-        {loading && (
-          <div className="flex justify-center py-10">
-            <div className="h-7 w-7 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        {/* Grid — real cards + inline shimmer when fetching more */}
+        {(movies.length > 0 || (loading && page === 1)) && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-9 gap-3 sm:gap-4 2xl:gap-5">
+            {movies.map((movie) => (
+              <GptMovieCard key={movie.id} movie={movie} />
+            ))}
+            {loading && movies.length > 0 && Array(9).fill(0).map((_, i) => (
+              <div key={`sk-${i}`} className="space-y-2">
+                <div className="w-full aspect-[2/3] rounded-lg bg-white/[0.07] animate-pulse" />
+                <div className="h-3 rounded bg-white/[0.07] animate-pulse" />
+                <div className="h-3 w-2/3 rounded bg-white/[0.07] animate-pulse" />
+              </div>
+            ))}
           </div>
         )}
 

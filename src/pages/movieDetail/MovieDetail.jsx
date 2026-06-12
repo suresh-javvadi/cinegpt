@@ -312,7 +312,6 @@ const MovieDetail = () => {
     setFranchise(null);
     setWatchProviders(null);
     setCertification(null);
-    window.scrollTo(0, 0);
 
     Promise.all([
       fetch(`${TMDB_BASE}/${id}`, API_GET_OPTIONS).then((r) => r.json()),
@@ -437,7 +436,7 @@ const MovieDetail = () => {
     movie.budget > 0 && movie.revenue > 0 ? movie.revenue - movie.budget : null;
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white">
+    <div className="min-h-screen bg-[#141414] text-white pb-20 sm:pb-0">
       <Header />
       {/* Backdrop */}
       <div className="relative w-full h-[55vh] sm:h-[65vh] md:h-[75vh]">
@@ -453,7 +452,7 @@ const MovieDetail = () => {
 
         <button
           onClick={() => navigate(-1)}
-          className="absolute top-5 left-5 flex items-center gap-2 bg-black/60 hover:bg-black px-4 py-2 rounded-full text-sm font-medium transition"
+          className="hidden sm:flex absolute top-20 left-5 items-center gap-2 bg-black/60 hover:bg-black px-4 py-2 rounded-full text-sm font-medium transition z-50"
         >
           <svg
             width="18"
@@ -569,12 +568,26 @@ const MovieDetail = () => {
               {movie.genres?.map((g) => (
                 <button
                   key={g.id}
-                  onClick={() => navigate(`/genre/${g.id}/${encodeURIComponent(g.name)}`)}
+                  onClick={() =>
+                    navigate(`/genre/${g.id}/${encodeURIComponent(g.name)}`)
+                  }
                   className="group flex items-center gap-1 bg-red-600/20 hover:bg-red-600 border border-red-600/50 hover:border-red-600 text-red-400 hover:text-white text-xs px-3 py-1 rounded-full transition-all duration-200 cursor-pointer hover:scale-105 active:scale-95"
                 >
                   {g.name}
-                  <svg width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" className="opacity-50 group-hover:opacity-100 transition-opacity">
-                    <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg
+                    width="10"
+                    height="10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                    className="opacity-50 group-hover:opacity-100 transition-opacity"
+                  >
+                    <path
+                      d="M9 18l6-6-6-6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
               ))}
@@ -1002,22 +1015,138 @@ const MovieDetail = () => {
   );
 };
 
+const Bone = ({ className }) => (
+  <div className={`bg-white/[0.07] rounded-lg animate-pulse ${className}`} />
+);
+
 const LoadingSkeleton = () => (
-  <div className="min-h-screen bg-[#141414] animate-pulse">
-    <div className="w-full h-[65vh] bg-gray-800" />
-    <div className="px-4 sm:px-10 md:px-16 -mt-36 relative z-10">
-      <div className="flex gap-10 items-start">
-        <div className="hidden sm:block w-52 h-72 bg-gray-700 rounded-xl flex-shrink-0" />
-        <div className="flex-1 space-y-4 pt-8">
-          <div className="h-10 bg-gray-700 rounded w-2/3" />
-          <div className="h-4 bg-gray-700 rounded w-1/3" />
-          <div className="flex gap-2">
-            <div className="h-6 w-16 bg-gray-700 rounded-full" />
-            <div className="h-6 w-20 bg-gray-700 rounded-full" />
-            <div className="h-6 w-14 bg-gray-700 rounded-full" />
+  <div className="min-h-screen bg-[#141414] text-white">
+    <Header />
+
+    {/* Backdrop */}
+    <div className="relative w-full h-[55vh] sm:h-[65vh] md:h-[75vh] bg-neutral-900 animate-pulse">
+      <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+    </div>
+
+    {/* Content */}
+    <div className="px-3 sm:px-8 md:px-16 -mt-20 sm:-mt-32 md:-mt-40 relative z-10 pb-20">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 md:gap-10 items-start">
+        {/* Poster */}
+        <Bone className="hidden sm:block flex-shrink-0 w-36 md:w-48 lg:w-52 aspect-[2/3] rounded-xl" />
+
+        {/* Info */}
+        <div className="flex-1 space-y-5 pt-2">
+          <div className="space-y-2">
+            <Bone className="h-9 sm:h-11 md:h-14 w-3/4" />
+            <Bone className="h-4 w-2/5" />
           </div>
-          <div className="h-20 bg-gray-700 rounded w-full max-w-2xl" />
-          <div className="h-10 w-36 bg-gray-700 rounded-lg" />
+
+          <div className="flex gap-2 flex-wrap">
+            {[72, 56, 64, 48, 80].map((w, i) => (
+              <div
+                key={i}
+                style={{ width: w }}
+                className="h-6 bg-white/[0.07] rounded-full animate-pulse"
+              />
+            ))}
+          </div>
+
+          <div className="flex gap-2 flex-wrap">
+            {[68, 80, 60].map((w, i) => (
+              <div
+                key={i}
+                style={{ width: w }}
+                className="h-7 bg-white/[0.07] rounded-full animate-pulse"
+              />
+            ))}
+          </div>
+
+          <div className="space-y-2 max-w-2xl">
+            <Bone className="h-4 w-full" />
+            <Bone className="h-4 w-11/12" />
+            <Bone className="h-4 w-5/6" />
+            <Bone className="h-4 w-4/5" />
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4 pt-3 border-t border-white/5">
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <div key={i} className="space-y-1.5">
+                  <Bone className="h-3 w-16" />
+                  <Bone className="h-4 w-28" />
+                </div>
+              ))}
+          </div>
+
+          <Bone className="h-10 w-36" />
+        </div>
+      </div>
+
+      {/* Cast */}
+      <div className="mt-12">
+        <Bone className="h-6 w-24 mb-5" />
+        <div className="flex gap-4 overflow-hidden">
+          {Array(8)
+            .fill(0)
+            .map((_, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-20 sm:w-24 space-y-2 text-center"
+              >
+                <Bone className="w-full aspect-square rounded-full" />
+                <Bone className="h-3 w-full mx-auto" />
+                <Bone className="h-3 w-2/3 mx-auto" />
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* Media */}
+      <div className="mt-12">
+        <Bone className="h-6 w-16 mb-4" />
+        <div className="flex gap-6 border-b border-white/5 mb-5 pb-2">
+          {[60, 72, 56].map((w, i) => (
+            <div
+              key={i}
+              style={{ width: w }}
+              className="h-4 bg-white/[0.07] rounded animate-pulse"
+            />
+          ))}
+        </div>
+        <div className="flex gap-4 overflow-hidden">
+          {[true, false, false, false].map((featured, i) => (
+            <Bone
+              key={i}
+              className={`flex-shrink-0 aspect-video rounded-xl ${featured ? "w-64 sm:w-[28rem]" : "w-48 sm:w-80"}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Reviews */}
+      <div className="mt-12">
+        <Bone className="h-6 w-20 mb-5" />
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-white/[0.04] border border-white/8 rounded-xl p-5 space-y-3"
+            >
+              <div className="flex gap-3 items-start">
+                <Bone className="w-11 h-11 rounded-full flex-shrink-0" />
+                <div className="flex-1 space-y-1.5">
+                  <Bone className="h-4 w-48" />
+                  <Bone className="h-3 w-32" />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Bone className="h-3 w-full" />
+                <Bone className="h-3 w-11/12" />
+                <Bone className="h-3 w-4/5" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

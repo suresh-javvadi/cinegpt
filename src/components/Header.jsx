@@ -28,7 +28,22 @@ const Header = () => {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(0);
+  const [navVisible, setNavVisible] = useState(true);
   const dropdownRef = useRef(null);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      const atBottom = y + window.innerHeight >= document.documentElement.scrollHeight - 10;
+      if (y < 10 || atBottom) setNavVisible(true);
+      else if (y < lastScrollY.current) setNavVisible(true);
+      else setNavVisible(false);
+      lastScrollY.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isGptPage = location.pathname === "/gpt-search";
   const handleGptSearchView = () => navigate(isGptPage ? "/browse" : "/gpt-search");
@@ -97,14 +112,22 @@ const Header = () => {
   const firstName = user?.displayName?.split(" ")[0] ?? null;
 
   return (
-    <div className="absolute w-full z-40 bg-gradient-to-b from-black/95 via-black/50 to-transparent px-4 sm:px-8 pt-3 pb-10">
+    <>
+    <div
+      className="fixed w-full z-40 bg-gradient-to-b from-black/95 via-black/50 to-transparent px-4 sm:px-8 pt-3 pb-10"
+      style={{
+        transform: navVisible ? "translateY(0)" : "translateY(-110%)",
+        transition: "transform 0.32s cubic-bezier(0.4,0,0.2,1)",
+      }}
+    >
       {user ? (
         <div className="flex justify-between items-center">
           {/* Logo */}
           <img
-            className="w-24 sm:w-32 md:w-40 object-contain"
+            className="w-24 sm:w-32 md:w-40 object-contain cursor-pointer"
             src={Logo}
             alt="CineGPT"
+            onClick={() => navigate("/browse")}
           />
 
           {/* Right controls */}
@@ -112,7 +135,7 @@ const Header = () => {
             {/* Search */}
             <button
               onClick={() => navigate("/search")}
-              className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer"
+              className="hidden sm:flex w-8 h-8 sm:w-9 sm:h-9 items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer"
             >
               <svg
                 width="17"
@@ -131,7 +154,7 @@ const Header = () => {
             {/* Trending */}
             <button
               onClick={() => navigate("/trending")}
-              className="relative w-9 h-9 flex items-center justify-center rounded-full cursor-pointer group"
+              className="relative hidden sm:flex w-9 h-9 items-center justify-center rounded-full cursor-pointer group"
             >
               <span
                 className="absolute inset-0 rounded-full bg-orange-500/40"
@@ -156,7 +179,7 @@ const Header = () => {
             {/* GPT Search toggle */}
             <button
               onClick={handleGptSearchView}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`hidden sm:flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 isGptPage
                   ? "bg-white text-black hover:bg-white/90"
                   : "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-500 hover:to-indigo-500 shadow-lg shadow-purple-900/40"
@@ -755,6 +778,114 @@ const Header = () => {
         }
       `}</style>
     </div>
+
+      {/* ── Bottom nav — outside the transformed header div so fixed positioning works ── */}
+      {user && (
+        <nav
+          className="fixed bottom-0 left-0 right-0 sm:hidden z-50"
+          style={{
+            paddingBottom: "env(safe-area-inset-bottom, 0px)",
+            transform: navVisible ? "translateY(0)" : "translateY(110%)",
+            transition: "transform 0.32s cubic-bezier(0.4,0,0.2,1)",
+          }}
+        >
+          <div className="flex bg-gradient-to-t from-black/95 via-black/80 to-black/60 backdrop-blur-2xl border-t border-white/[0.07]">
+            {[
+              {
+                label: "Home",
+                path: "/browse",
+                activeColor: "text-sky-400",
+                inactiveColor: "text-sky-800",
+                pillColor: "bg-sky-500/15",
+                activeIcon: (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                  </svg>
+                ),
+                inactiveIcon: (
+                  <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" strokeLinecap="round" strokeLinejoin="round" />
+                    <polyline points="9 22 9 12 15 12 15 22" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Search",
+                path: "/search",
+                activeColor: "text-white",
+                inactiveColor: "text-gray-600",
+                pillColor: "bg-white/10",
+                activeIcon: (
+                  <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+                  </svg>
+                ),
+                inactiveIcon: (
+                  <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Trending",
+                path: "/trending",
+                activeColor: "text-orange-400",
+                inactiveColor: "text-orange-800",
+                pillColor: "bg-orange-500/15",
+                activeIcon: (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C9 7 4 8.5 4 13a8 8 0 0016 0c0-2.5-1.5-4.5-3-6-1 2-2 2.5-3 2.5C15 7.5 12 2 12 2z" />
+                  </svg>
+                ),
+                inactiveIcon: (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C9 7 4 8.5 4 13a8 8 0 0016 0c0-2.5-1.5-4.5-3-6-1 2-2 2.5-3 2.5C15 7.5 12 2 12 2z" />
+                  </svg>
+                ),
+              },
+              {
+                label: "GPT",
+                path: "/gpt-search",
+                activeColor: "text-purple-400",
+                inactiveColor: "text-purple-800",
+                pillColor: "bg-purple-500/15",
+                activeIcon: (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+                  </svg>
+                ),
+                inactiveIcon: (
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+                  </svg>
+                ),
+              },
+            ].map(({ label, path, activeIcon, inactiveIcon, activeColor, inactiveColor, pillColor }) => {
+              const active = location.pathname === path;
+              const color = active ? (activeColor ?? "text-white") : (inactiveColor ?? "text-gray-600");
+              return (
+                <button
+                  key={label}
+                  onClick={() => navigate(path)}
+                  className="flex-1 flex flex-col items-center gap-[3px] py-2.5 cursor-pointer active:scale-90 transition-transform duration-100"
+                >
+                  <div className={`px-3.5 py-1.5 rounded-2xl transition-all duration-200 ${active ? pillColor : "bg-transparent"}`}>
+                    <span className={`${color} transition-colors duration-200 block`}>
+                      {active ? activeIcon : inactiveIcon}
+                    </span>
+                  </div>
+                  <span className={`text-[10px] font-semibold tracking-wide transition-colors duration-200 ${color}`}>
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
+      )}
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, ScrollRestoration } from "react-router";
 import Login from "../pages/login/Login";
 import Browse from "../pages/browse/Browse";
 import MovieDetail from "../pages/movieDetail/MovieDetail";
@@ -10,43 +10,50 @@ import NotFound from "../pages/notFound/NotFound";
 import GenrePage from "../pages/genre/GenrePage";
 import GptSearch from "../pages/gptSearch/GptSearch";
 
+const Layout = ({ children }) => (
+  <>
+    <ScrollRestoration />
+    {children}
+  </>
+);
+
 const AppRoutes = () => {
   const appRouter = createBrowserRouter([
     {
       path: "/",
-      element: <Login />,
+      element: <Layout><Login /></Layout>,
     },
     {
       path: "/browse",
-      element: <Browse />,
+      element: <Layout><Browse /></Layout>,
     },
     {
       path: "/movie/:id",
-      element: <MovieDetail />,
+      element: <Layout><MovieDetail /></Layout>,
     },
     {
       path: "/search",
-      element: <SearchPage />,
+      element: <Layout><SearchPage /></Layout>,
     },
     {
       path: "/trending",
-      element: <TrendingPage />,
+      element: <Layout><TrendingPage /></Layout>,
     },
     {
       path: "/person/:id",
-      element: <PersonPage />,
+      element: <Layout><PersonPage /></Layout>,
     },
     {
       path: "/genre/:id/:name",
-      element: <GenrePage />,
+      element: <Layout><GenrePage /></Layout>,
     },
     {
       path: "/gpt-search",
-      element: <GptSearch />,
+      element: <Layout><GptSearch /></Layout>,
     },
     {
       path: "*",
-      element: <NotFound />,
+      element: <Layout><NotFound /></Layout>,
     },
   ]);
 
