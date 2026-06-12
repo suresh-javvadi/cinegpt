@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import VideoTitle from "./VideoTitle";
 import VideoBackground from "./VideoBackground";
 import { useSelector } from "react-redux";
 
-const AUTOPLAY_DELAY_VIDEO = 10000;
+const AUTOPLAY_DELAY_VIDEO = 15000;
 const AUTOPLAY_DELAY_NO_VIDEO = 5000;
 
 const TopContainer = () => {
@@ -12,19 +12,29 @@ const TopContainer = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
-  const nextSlideAtRef = useRef(null); // absolute timestamp when next slide should fire
+  const nextSlideAtRef = useRef(null);
+  const delayRef = useRef(AUTOPLAY_DELAY_VIDEO);
 
-  const total = movies?.length ?? 0;
-  const dotCount = Math.min(total, 10);
-  const mainMovie = movies?.[currentIndex] ?? null;
+  const displayMovies = useMemo(() => {
+    if (!movies) return [];
+    return movies.slice(0, 10);
+  }, [movies]);
+
+  const total = displayMovies.length;
+  const dotCount = total;
+  const mainMovie = displayMovies[currentIndex] ?? null;
   const currentTrailer = movieTrailers?.[mainMovie?.id];
   const delay =
     currentTrailer === null ? AUTOPLAY_DELAY_NO_VIDEO : AUTOPLAY_DELAY_VIDEO;
 
-  // How far into the current slide we already are (for dot animation offset)
-  const dotElapsed = nextSlideAtRef.current
-    ? Math.max(0, delay - Math.max(0, nextSlideAtRef.current - Date.now()))
-    : 0;
+  // Lock delay for this slide when currentIndex changes; don't let mid-slide trailer
+  // fetch changes restart the timer
+  useEffect(() => {
+    delayRef.current = delay;
+  }, [currentIndex]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const activeDelay = delayRef.current;
+
 
   useEffect(() => {
     if (!total) return;
@@ -35,7 +45,7 @@ const TopContainer = () => {
     }
 
     // Resume from where we left off, or start fresh
-    const fireAt = nextSlideAtRef.current ?? Date.now() + delay;
+    const fireAt = nextSlideAtRef.current ?? Date.now() + delayRef.current;
     nextSlideAtRef.current = fireAt;
     const remaining = Math.max(200, fireAt - Date.now());
 
@@ -45,7 +55,7 @@ const TopContainer = () => {
     }, remaining);
 
     return () => clearTimeout(timerRef.current);
-  }, [currentIndex, delay, total, paused]);
+  }, [currentIndex, total, paused]);
 
   if (!movies || movies.length === 0) return null;
 
@@ -65,11 +75,14 @@ const TopContainer = () => {
   };
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div
+      className="relative w-full overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <VideoBackground
         movieId={mainMovie?.id}
         backdropPath={mainMovie?.backdrop_path}
-        setPaused={setPaused}
       />
 
       {/* VideoTitle overlay */}
@@ -79,6 +92,8 @@ const TopContainer = () => {
       <button
         onClick={handlePrev}
         aria-label="Previous"
+        onMouseEnter={() => setPaused(false)}
+        onMouseLeave={() => setPaused(true)}
         className="
           absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20
           flex items-center justify-center
@@ -119,6 +134,8 @@ const TopContainer = () => {
       <button
         onClick={handleNext}
         aria-label="Next"
+        onMouseEnter={() => setPaused(false)}
+        onMouseLeave={() => setPaused(true)}
         className="
           absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20
           flex items-center justify-center
@@ -168,12 +185,12 @@ const TopContainer = () => {
                 : "bg-white/40 hover:bg-white/70 w-1 sm:w-1.5 h-1 sm:h-1.5"
             }`}
           >
-            {i === currentIndex && !paused && (
+            {i === currentIndex && (
               <span
-                className="absolute inset-y-0 left-0 bg-white rounded-full"
+                className="absolute inset-y-0 left-0 w-full bg-white rounded-full origin-left"
                 style={{
-                  animation: `dotProgress ${delay}ms linear forwards`,
-                  animationDelay: `-${dotElapsed}ms`,
+                  animation: `dotProgress ${activeDelay}ms linear forwards`,
+                  animationPlayState: paused ? "paused" : "running",
                 }}
               />
             )}
@@ -182,7 +199,7 @@ const TopContainer = () => {
       </div>
 
       <style>{`
-        @keyframes dotProgress { from { width: 0% } to { width: 100% } }
+        @keyframes dotProgress { from { transform: scaleX(0) } to { transform: scaleX(1) } }
       `}</style>
     </div>
   );
