@@ -32,7 +32,8 @@ const PwaInstallBanner = () => {
       setVisible(true);
     }
 
-    return () => window.removeEventListener("beforeinstallprompt", handlePrompt);
+    return () =>
+      window.removeEventListener("beforeinstallprompt", handlePrompt);
   }, []);
 
   const handleInstall = async () => {
@@ -64,14 +65,19 @@ const PwaInstallBanner = () => {
         />
 
         <div className="flex-1 min-w-0">
-          <p className="text-white text-sm font-semibold leading-tight">Install CineGPT</p>
+          <p className="text-white text-sm font-semibold leading-tight">
+            Install CineGPT
+          </p>
           {ios && !deferredPrompt ? (
             <p className="text-gray-400 text-[11px] mt-0.5 leading-snug">
               Tap{" "}
               <span className="inline-block text-gray-300 font-medium">
                 &#x2B06;&#xFE0E; Share
               </span>{" "}
-              → <span className="text-gray-300 font-medium">Add to Home Screen</span>
+              →{" "}
+              <span className="text-gray-300 font-medium">
+                Add to Home Screen
+              </span>
             </p>
           ) : (
             <p className="text-gray-400 text-[11px] mt-0.5">
@@ -94,7 +100,14 @@ const PwaInstallBanner = () => {
             className="w-7 h-7 flex items-center justify-center text-gray-500 hover:text-gray-300 transition cursor-pointer"
             aria-label="Dismiss"
           >
-            <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <svg
+              width="12"
+              height="12"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              viewBox="0 0 24 24"
+            >
               <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
             </svg>
           </button>
