@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { MOVIE_IMAGE_URL } from "../../utils/constants";
+import { MOVIE_CARD_IMAGE_URL } from "../../utils/constants";
 import {
   getRecentlyViewed,
   removeRecentlyViewed,
@@ -51,8 +51,10 @@ const RecentlyViewedRow = () => {
               {/* Poster */}
               <div className="w-[22vw] sm:w-[100px] md:w-[120px] lg:w-[140px] aspect-[2/3] rounded-lg overflow-hidden">
                 <img
-                  src={MOVIE_IMAGE_URL + movie.poster_path}
+                  src={MOVIE_CARD_IMAGE_URL + movie.poster_path}
                   alt={movie.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition duration-300 group-hover/card:scale-105 group-hover/card:brightness-75"
                 />
               </div>

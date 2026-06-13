@@ -48,6 +48,23 @@ body {
   }
 }
 
+button,
+a,
+[role="button"],
+[onClick],
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 0px;

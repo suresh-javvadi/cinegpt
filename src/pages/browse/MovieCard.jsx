@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router";
-import { MOVIE_IMAGE_URL, API_GET_OPTIONS } from "../../utils/constants";
+import { MOVIE_CARD_IMAGE_URL, API_GET_OPTIONS } from "../../utils/constants";
 import { createPortal } from "react-dom";
 
 /* ── Trailer Modal ─────────────────────────────────────────── */
@@ -71,13 +71,19 @@ const TrailerModal = ({ movie, trailerKey, onClose }) => {
   );
 };
 
+// Session-level cache: survives component unmount/remount for the entire browser session
+// { [movieId]: { key: string } | { unavailable: true } }
+const trailerCache = {};
+
 /* ── MovieCard ─────────────────────────────────────────────── */
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
-  const [trailerKey, setTrailerKey] = useState(null);
+  // Initialise from cache so remounted cards show instantly with no fetch
+  const cached = trailerCache[movie.id];
+  const [trailerKey, setTrailerKey] = useState(cached?.key ?? null);
   const [trailerLoading, setTrailerLoading] = useState(false);
-  const [trailerUnavailable, setTrailerUnavailable] = useState(false);
+  const [trailerUnavailable, setTrailerUnavailable] = useState(cached?.unavailable ?? false);
   const [trailerOpen, setTrailerOpen] = useState(false);
   const longPressTimer = useRef(null);
 
@@ -89,7 +95,8 @@ const MovieCard = ({ movie }) => {
     : null;
 
   const fetchTrailer = async () => {
-    if (trailerKey || trailerLoading || trailerUnavailable) return;
+    // Already have a result (from state or cache) — nothing to do
+    if (trailerKey || trailerUnavailable || trailerLoading) return;
     setTrailerLoading(true);
     try {
       const res = await fetch(
@@ -101,9 +108,15 @@ const MovieCard = ({ movie }) => {
         data.results?.find((v) => v.site === "YouTube" && v.type === "Trailer" && v.official) ||
         data.results?.find((v) => v.site === "YouTube" && v.type === "Trailer") ||
         data.results?.find((v) => v.site === "YouTube");
-      if (pick) setTrailerKey(pick.key);
-      else setTrailerUnavailable(true);
+      if (pick) {
+        trailerCache[movie.id] = { key: pick.key };
+        setTrailerKey(pick.key);
+      } else {
+        trailerCache[movie.id] = { unavailable: true };
+        setTrailerUnavailable(true);
+      }
     } catch {
+      trailerCache[movie.id] = { unavailable: true };
       setTrailerUnavailable(true);
     } finally {
       setTrailerLoading(false);
@@ -154,8 +167,10 @@ const MovieCard = ({ movie }) => {
         "
       >
         <img
-          src={MOVIE_IMAGE_URL + movie.poster_path}
+          src={MOVIE_CARD_IMAGE_URL + movie.poster_path}
           alt={movie?.title}
+          loading="lazy"
+          decoding="async"
           className={`w-full h-full object-cover transition-all duration-700 ${trailerLoading ? "brightness-[0.35]" : "brightness-100"}`}
         />
 

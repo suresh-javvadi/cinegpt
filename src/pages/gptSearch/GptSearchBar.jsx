@@ -45,6 +45,7 @@ const GptSearchBar = () => {
   const dispatch = useDispatch();
   const selectedLang = useSelector((store) => store.config.lang);
   const searchTerm = useRef(null);
+  const lastQuery = useRef(null);
   const [loadingStage, setLoadingStage] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -134,7 +135,7 @@ const GptSearchBar = () => {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       if (res.status === 429) {
-        const quotaErr = new Error("Gemini quota exceeded — switching to backup AI.");
+        const quotaErr = new Error("Gemini quota exceeded.");
         quotaErr.isQuota = true;
         throw quotaErr;
       }
@@ -175,13 +176,25 @@ const GptSearchBar = () => {
     return text;
   };
 
-  // Try Groq first; silently fall back to Gemini on quota error
+  // Try Groq first; fall back to Gemini on any failure
   const callAI = async (geminiContents, groqMessages) => {
+    let groqErr;
     try {
       return await callGroq(groqMessages);
     } catch (err) {
-      if (err.isQuota) return await callGemini(geminiContents);
-      throw err;
+      groqErr = err;
+    }
+    try {
+      return await callGemini(geminiContents);
+    } catch (geminiErr) {
+      const isNetwork =
+        groqErr?.message?.toLowerCase().includes("fetch") ||
+        geminiErr?.message?.toLowerCase().includes("fetch");
+      throw new Error(
+        isNetwork
+          ? "Connection problem — check your internet and try again."
+          : "AI services are temporarily unavailable. Please try again in a moment."
+      );
     }
   };
 
@@ -208,6 +221,7 @@ const GptSearchBar = () => {
 
     setLoadingStage("asking");
     setIsSuccess(false);
+    lastQuery.current = query;
 
     try {
       // Stage 1 — ask AI (Gemini → Groq fallback)
@@ -313,18 +327,32 @@ const GptSearchBar = () => {
         </button>
       </form>
 
-      {/* Error banner — #6 */}
+      {/* Error banner */}
       {errorMsg && (
-        <div className="w-full max-w-xl sm:max-w-2xl flex items-start gap-3 bg-red-950/60 border border-red-500/40 text-red-300 text-sm rounded-xl px-4 py-3">
-          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="flex-shrink-0 mt-0.5">
-            <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
-          </svg>
-          <span>{errorMsg}</span>
-          <button onClick={() => setErrorMsg(null)} className="ml-auto text-red-400 hover:text-red-200 cursor-pointer">
-            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path d="M18 6L6 18M6 6l12 12" />
+        <div className="w-full max-w-xl sm:max-w-2xl bg-red-950/60 border border-red-500/40 text-red-300 text-sm rounded-xl px-4 py-3">
+          <div className="flex items-start gap-3">
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="flex-shrink-0 mt-0.5">
+              <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
             </svg>
-          </button>
+            <span className="flex-1">{errorMsg}</span>
+            <button onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-red-200 cursor-pointer flex-shrink-0">
+              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          {lastQuery.current && (
+            <button
+              onClick={() => { setErrorMsg(null); handleGptSearch(lastQuery.current); }}
+              className="mt-2 ml-7 flex items-center gap-1.5 text-xs text-red-400 hover:text-red-200 underline underline-offset-2 cursor-pointer transition-colors"
+            >
+              <svg width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M1 4v6h6M23 20v-6h-6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Try again
+            </button>
+          )}
         </div>
       )}
 

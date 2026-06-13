@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Header from "../../components/Header";
 import { validateSignIn, validateSignUp } from "./loginValidations";
 import {
@@ -38,6 +38,13 @@ const Login = () => {
 
   const [forgotStatus, setForgotStatus] = useState(null); // null | "loading" | "sent" | "error"
   const [forgotError, setForgotError] = useState(null);
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => setBgLoaded(true);
+    img.src = loginBg;
+  }, []);
 
   const clearFormState = () => {
     setErrorMsg(null);
@@ -148,13 +155,17 @@ const Login = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Background via CSS — reliable for full-screen */}
+      {/* Fallback gradient — always visible instantly */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-neutral-950 to-black" />
+      {/* Actual background image — fades in once loaded */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `url(${loginBg})`,
           backgroundSize: "cover",
           backgroundPosition: "center top",
+          opacity: bgLoaded ? 1 : 0,
+          transition: "opacity 0.9s ease",
         }}
       />
       <div className="absolute inset-0 bg-black/55" />

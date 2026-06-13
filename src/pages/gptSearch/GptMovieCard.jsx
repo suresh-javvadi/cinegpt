@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { MOVIE_IMAGE_URL } from "../../utils/constants";
+import { MOVIE_CARD_IMAGE_URL } from "../../utils/constants";
 
 const GptMovieCard = ({ movie, featured = false }) => {
   const navigate = useNavigate();
@@ -18,8 +18,10 @@ const GptMovieCard = ({ movie, featured = false }) => {
     >
       <div className="relative rounded-xl overflow-hidden">
         <img
-          src={MOVIE_IMAGE_URL + movie.poster_path}
+          src={MOVIE_CARD_IMAGE_URL + movie.poster_path}
           alt={movie.title}
+          loading="lazy"
+          decoding="async"
           className="w-full aspect-[2/3] object-cover transition-transform duration-300 group-hover:scale-105"
         />
 

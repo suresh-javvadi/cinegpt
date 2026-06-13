@@ -442,9 +442,11 @@ const MovieDetail = () => {
       <div className="relative w-full h-[55vh] sm:h-[65vh] md:h-[75vh]">
         {movie.backdrop_path && (
           <img
-            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
             alt={movie.title}
-            className="w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-cover object-[center_20%]"
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/50 to-transparent" />
@@ -477,6 +479,8 @@ const MovieDetail = () => {
               <img
                 src={`${MOVIE_IMAGE_URL}${movie.poster_path}`}
                 alt={movie.title}
+                loading="eager"
+                decoding="async"
                 className="w-full"
               />
             </div>
