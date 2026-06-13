@@ -59,7 +59,7 @@ const PwaInstallBanner = () => {
         style={{ backdropFilter: "blur(12px)" }}
       >
         <img
-          src="/favIcon.png"
+          src="/favicon-96x96.png"
           alt="CineGPT"
           className="w-10 h-10 rounded-xl flex-shrink-0"
         />
