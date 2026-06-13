@@ -8,34 +8,76 @@ const GptSearch = () => {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden pb-20 sm:pb-0">
       <Header />
-      {/* Background with stronger dark overlay for distinct identity */}
-      <div className="fixed inset-0 -z-10">
-        <img src={loginBg} alt="background" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/80" />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-950/30 via-black/50 to-black/90" />
-      </div>
 
-      <div className="pt-16 sm:pt-20 px-3 sm:px-6 md:px-10 w-full pb-12">
+      {/* Background — CSS bg is more reliable than <img> tag */}
+      <div
+        className="fixed inset-0 -z-10"
+        style={{
+          backgroundImage: `url(${loginBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center top",
+        }}
+      />
+      <div className="fixed inset-0 -z-10 bg-black/80" />
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-purple-950/30 via-black/60 to-black" />
 
-        {/* Hero heading */}
-        <div className="text-center mt-6 sm:mt-10 mb-8 sm:mb-10">
-          {/* AI icon */}
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-900/50">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
-              </svg>
+      {/* Decorative glows */}
+      <div
+        className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] -z-10 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, rgba(139,92,246,0.12) 0%, transparent 70%)",
+        }}
+      />
+
+      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-10 w-full pb-16">
+
+        {/* Hero */}
+        <div className="text-center mt-8 sm:mt-14 mb-10 sm:mb-12">
+
+          {/* Icon */}
+          <div className="flex justify-center mb-5">
+            <div className="relative">
+              {/* Glow ring */}
+              <div
+                className="absolute inset-0 rounded-2xl blur-xl"
+                style={{ background: "rgba(139,92,246,0.4)", transform: "scale(1.4)" }}
+              />
+              <div
+                className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+                  boxShadow: "0 8px 32px rgba(124,58,237,0.5)",
+                }}
+              >
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+                </svg>
+              </div>
             </div>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
-            What would you like to{" "}
-            <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              watch?
+          {/* Eyebrow */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex-1 max-w-[50px] h-px bg-gradient-to-r from-transparent to-purple-500/40" />
+            <span className="text-purple-400/80 text-[10px] font-semibold tracking-[0.3em] uppercase">
+              AI-Powered Search
+            </span>
+            <div className="flex-1 max-w-[50px] h-px bg-gradient-to-l from-transparent to-purple-500/40" />
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white mb-4 leading-tight tracking-tight">
+            What should you{" "}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(135deg, #a78bfa, #818cf8, #c084fc)" }}
+            >
+              watch next?
             </span>
           </h1>
-          <p className="text-gray-400 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-            Describe a mood, genre, or any idea — AI finds the perfect movies for you.
+
+          <p className="text-gray-400 text-sm sm:text-base max-w-sm sm:max-w-md mx-auto leading-relaxed">
+            Describe a mood, genre, actor, or any idea — Gemini AI finds the perfect movies for you.
           </p>
         </div>
 

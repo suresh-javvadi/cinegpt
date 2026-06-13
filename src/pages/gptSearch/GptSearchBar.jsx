@@ -22,7 +22,7 @@ const EXAMPLE_PROMPTS = [
 ];
 
 const STAGE_LABELS = {
-  asking:    "Asking AI for recommendations...",
+  asking:    "Asking Groq AI for recommendations...",
   verifying: "Verifying movie titles...",
   fetching:  "Finding movies on TMDB...",
 };
@@ -100,11 +100,93 @@ const GptSearchBar = () => {
   };
 
   // Parse "Kushi (2001)" → { label: "Kushi (2001)", title: "Kushi", year: 2001 }
+  // Also handles "1. Kushi (2001)", "- Kushi (2001)", "* Kushi (2001)" formats
   const parseEntry = (raw) => {
-    const m = raw.trim().match(/^(.+?)\s*\((\d{4})\)\s*$/);
-    if (m) return { label: raw.trim(), title: m[1].trim(), year: parseInt(m[2]) };
-    return { label: raw.trim(), title: raw.trim(), year: null };
+    const cleaned = raw
+      .trim()
+      .replace(/^\d+[\.\)]\s*/, "") // strip "1. " or "1) "
+      .replace(/^[-*•]\s*/, "")     // strip "- " or "* " or "• "
+      .trim();
+    if (!cleaned || cleaned.length < 2) return { label: "", title: "", year: null };
+    const m = cleaned.match(/^(.+?)\s*\((\d{4})\)\s*$/);
+    if (m) return { label: cleaned, title: m[1].trim(), year: parseInt(m[2]) };
+    return { label: cleaned, title: cleaned, year: null };
   };
+
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`;
+  const today = new Date().toISOString().slice(0, 10); // e.g. "2026-06-13"
+  const SYSTEM_PROMPT = `You are a precise movie recommendation engine covering all world cinema — Hollywood, Bollywood, Tollywood, Tamil, Malayalam, Kannada, Korean, Japanese, and more. Accuracy and formatting are critical. Today's date is ${today}. When the user's query implies recency (e.g. "this weekend", "latest", "new releases", "now playing", "2025 movies"), prioritize movies released in the last 6–12 months.`;
+
+  const callGemini = async (contents) => {
+    const res = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents,
+        generationConfig: {
+          temperature: 0.3,
+          maxOutputTokens: 512,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 429) {
+        const quotaErr = new Error("Gemini quota exceeded — switching to backup AI.");
+        quotaErr.isQuota = true;
+        throw quotaErr;
+      }
+      throw new Error(err?.error?.message ?? `Gemini request failed (${res.status})`);
+    }
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!text) throw new Error("Gemini returned an empty response. Try rephrasing your query.");
+    return text;
+  };
+
+  const callGroq = async (messages) => {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages,
+        temperature: 0.3,
+        max_tokens: 512,
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (res.status === 429) {
+        const quotaErr = new Error("Groq quota exceeded — switching to backup AI.");
+        quotaErr.isQuota = true;
+        throw quotaErr;
+      }
+      throw new Error(err?.error?.message ?? `Groq request failed (${res.status})`);
+    }
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content?.trim();
+    if (!text) throw new Error("AI returned an empty response. Try rephrasing your query.");
+    return text;
+  };
+
+  // Try Groq first; silently fall back to Gemini on quota error
+  const callAI = async (geminiContents, groqMessages) => {
+    try {
+      return await callGroq(groqMessages);
+    } catch (err) {
+      if (err.isQuota) return await callGemini(geminiContents);
+      throw err;
+    }
+  };
+
+  const RULES = `Rules:\n- If the query implies recency ("this weekend", "latest", "new", "now playing", "2025"), ONLY recommend movies released in the last 6–12 months\n- Include movies from ANY language or country; if the query mentions a regional language or industry (Telugu, Tamil, Hindi, etc.), prioritize those films\n- Provide titles ONLY in their romanized/English form as they appear in TMDB or IMDb — no native scripts\n- Include the release year in parentheses after each title, e.g.: Kushi (2001), RRR (2022)\n- Exactly 5 movies\n- No numbering\n- No explanations\n- Comma-separated\n- Single line`;
+  const VERIFY = `Check your previous answer carefully. Fix any mistakes. Ensure:\n- Exactly 5 real movie titles\n- Each title includes the release year in parentheses, e.g.: Kushi (2001), RRR (2022)\n- Titles are in romanized/English form exactly as they appear in TMDB or IMDb (no native scripts)\n- Correct spelling and correct year\n- No duplicates\n- Comma-separated\n- Single line only\nReturn ONLY the corrected movie list.`;
 
   const handleGptSearch = async (overrideQuery) => {
     const query = overrideQuery ?? searchTerm.current?.value.trim();
@@ -128,71 +210,36 @@ const GptSearchBar = () => {
     setIsSuccess(false);
 
     try {
-      // Stage 1 — ask AI
-      const firstRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "openrouter/free",
-          reasoning: { enabled: true },
-          messages: [
-            {
-              role: "system",
-              content: "You are a precise movie recommendation engine covering all world cinema — Hollywood, Bollywood, Tollywood, Tamil, Malayalam, Kannada, Korean, Japanese, and more. Accuracy and formatting are critical.",
-            },
-            {
-              role: "user",
-              content: `Recommend movies based on this query:\n"${query}"\nRules:\n- Include movies from ANY language or country; if the query mentions a regional language or industry (Telugu, Tamil, Hindi, etc.), prioritize those films\n- Provide titles ONLY in their romanized/English form as they appear in TMDB or IMDb — no native scripts\n- Include the release year in parentheses after each title, e.g.: Kushi (2001), RRR (2022)\n- Exactly 5 movies\n- No numbering\n- No explanations\n- Comma-separated\n- Single line`,
-            },
-          ],
-        }),
-      });
+      // Stage 1 — ask AI (Gemini → Groq fallback)
+      const askMsg = `Recommend movies based on this query:\n"${query}"\n${RULES}`;
+      const firstResponse = await callAI(
+        [{ role: "user", parts: [{ text: askMsg }] }],
+        [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: askMsg }],
+      );
 
-      if (!firstRes.ok) throw new Error(`AI request failed (${firstRes.status}). Check your API key.`);
-
-      const firstData = await firstRes.json();
-      const assistantMessage = firstData?.choices?.[0]?.message;
-      if (!assistantMessage?.content) throw new Error("AI returned an empty response. Try again.");
-
-      // Stage 2 — verify
+      // Stage 2 — verify (same provider chain)
       setLoadingStage("verifying");
+      const finalContent = await callAI(
+        [
+          { role: "user",  parts: [{ text: `Recommend movies based on: "${query}"` }] },
+          { role: "model", parts: [{ text: firstResponse }] },
+          { role: "user",  parts: [{ text: VERIFY }] },
+        ],
+        [
+          { role: "system",    content: SYSTEM_PROMPT },
+          { role: "user",      content: `Recommend movies based on: "${query}"` },
+          { role: "assistant", content: firstResponse },
+          { role: "user",      content: VERIFY },
+        ],
+      );
 
-      const secondRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "openrouter/free",
-          messages: [
-            { role: "user", content: `Recommend movies based on: "${query}"` },
-            {
-              role: "assistant",
-              content: assistantMessage.content,
-              reasoning_details: assistantMessage.reasoning_details,
-            },
-            {
-              role: "user",
-              content: `Check your previous answer carefully. Fix any mistakes. Ensure:\n- Exactly 5 real movie titles\n- Each title includes the release year in parentheses, e.g.: Kushi (2001), RRR (2022)\n- Titles are in romanized/English form exactly as they appear in TMDB or IMDb (no native scripts)\n- Correct spelling and correct year\n- No duplicates\n- Comma-separated\n- Single line only\nReturn ONLY the corrected movie list.`,
-            },
-          ],
-        }),
-      });
-
-      if (!secondRes.ok) throw new Error(`Verification failed (${secondRes.status}). Try again.`);
-
-      const secondData = await secondRes.json();
-      const finalContent = secondData?.choices?.[0]?.message?.content;
       if (!finalContent) throw new Error("AI returned an empty verification response.");
 
+      // Split on comma OR newline — Gemini sometimes ignores the "comma-separated" instruction
       const parsed = finalContent
-        .split(",")
+        .split(/[\n,]+/)
         .map(parseEntry)
-        .filter((p) => p.title)
+        .filter((p) => p.title && p.title.length > 1)
         .slice(0, 5);
 
       // Stage 3 — fetch from TMDB

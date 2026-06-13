@@ -50,7 +50,7 @@ export const validateSignUp = (email, password, fullName) => {
   errors.fullNameErr = !fullName
     ? "🎭 Character name missing! Who's starring in this movie?"
     : !fullNameRegex.test(fullName)
-    ? "🎬 That name is shorter than a TikTok skit"
+    ? "🎬 Names can only contain letters and spaces (min 2 characters)"
     : null;
 
   return errors;
