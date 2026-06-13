@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favIcon.png", "logo.webp"],
+      includeAssets: ["favIcon.png"],
       manifest: {
         name: "CineGPT",
         short_name: "CineGPT",
