@@ -142,9 +142,6 @@ const LandingHero = ({ onRequireAuth }) => {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-[11px] text-gray-500 tracking-wide">
-          In theatres now — updated daily from TMDB
-        </p>
       </div>
 
       <style>{`
