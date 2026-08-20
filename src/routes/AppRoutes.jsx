@@ -9,6 +9,7 @@ import PersonPage from "../pages/person/PersonPage";
 import NotFound from "../pages/notFound/NotFound";
 import GenrePage from "../pages/genre/GenrePage";
 import GptSearch from "../pages/gptSearch/GptSearch";
+import ActorsPage from "../pages/actors/ActorsPage";
 
 const Layout = ({ children }) => (
   <>
@@ -38,6 +39,10 @@ const AppRoutes = () => {
     {
       path: "/trending",
       element: <Layout><TrendingPage /></Layout>,
+    },
+    {
+      path: "/actors",
+      element: <Layout><ActorsPage /></Layout>,
     },
     {
       path: "/person/:id",
